@@ -1253,20 +1253,21 @@ def check_daily_reset():
 # ──────────────────────────────────────
 # RUN
 # ──────────────────────────────────────
+# Initialize DB for Gunicorn/Render
+with app.app_context():
+    db.create_all()
+    try:
+        from sqlalchemy import text
+        with db.engine.connect() as conn:
+            conn.execute(text("ALTER TABLE users ADD COLUMN last_reset_date DATE"))
+            conn.commit()
+        print("✅ Migrated: added last_reset_date column to users")
+    except Exception:
+        pass
+    print("✅ FinYaar DB tables ready.")
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        try:
-            from sqlalchemy import text
-            with db.engine.connect() as conn:
-                conn.execute(text("ALTER TABLE users ADD COLUMN last_reset_date DATE"))
-                conn.commit()
-            print("✅ Migrated: added last_reset_date column to users")
-        except Exception:
-            pass
-        print("✅ FinYaar DB tables ready.")
-        print(f"🤖 FinBot: HF API Key {'✅ SET' if HF_API_KEY else '❌ NOT SET — using fallback only'}")
-        # _do_daily_reset()
+    print(f"🤖 FinBot: HF API Key {'✅ SET' if HF_API_KEY else '❌ NOT SET — using fallback only'}")
     # t = threading.Thread(target=_midnight_scheduler, daemon=True)
     # t.start()
     app.run(debug=True, port=5000, use_reloader=False)
