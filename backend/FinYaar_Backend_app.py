@@ -145,14 +145,21 @@ def is_banasthali(email: str) -> bool:
     return email.strip().lower().endswith(f'@{ALLOWED_DOMAIN}')
 
 def gen_otp() -> str:
-    # Set to static 123456 because Render free tier blocks SMTP ports
-    return '123456'
+    return ''.join(random.choices(string.digits, k=6))
 
 def send_email(to: str, subject: str, html: str):
-    # Render blocks SMTP ports (465/587) on free tier, which causes the app to hang.
-    # For this demo deployment, we simply print the email attempt and skip sending.
-    print(f"⚠️ [FinYaar] Bypassing email to {to} due to Render restrictions.")
-    return
+    if not GMAIL_PASS:
+        print("⚠️ [FinYaar] GMAIL_APP_PASS is empty. Skipping email delivery.")
+        return
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = f'FinYaar <{GMAIL_USER}>'
+    msg['To'] = to
+    msg.attach(MIMEText(html, 'html'))
+    # Use port 465 with a strict timeout. If it fails, let the error propagate to the caller.
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as s:
+        s.login(GMAIL_USER, GMAIL_PASS)
+        s.sendmail(GMAIL_USER, to, msg.as_string())
 
 def otp_email_html(otp: str, purpose: str) -> str:
     return f"""
