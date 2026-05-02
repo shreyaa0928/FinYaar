@@ -552,7 +552,7 @@
         <!-- Step 2 -->
         <div id="reg-s2" class="hidden">
           <h3 class="font-black text-2xl italic uppercase mb-2 text-center text-blue-600">Enter OTP</h3>
-          <p class="text-center text-xs font-bold opacity-60 mb-6">Sent to your Banasthali email</p>
+          <p class="text-center text-sm font-bold text-red-600 mb-6">Demo Mode: Use OTP 123456</p>
           <div class="otp-grid mb-6">
             <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,0,'reg')">
             <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,1,'reg')">
@@ -1580,7 +1580,7 @@
       const data = await res.json();
       if (!res.ok) { showToast('❌ ' + data.error); return; }
 
-      showToast('📧 OTP sent to your email!');
+      showToast('🔑 Use Demo OTP: 123456');
       hide('login-s1'); show('login-s2');
       ST.attemptLoginEmail = email;
     }
@@ -1639,7 +1639,7 @@
 
       if (!res.ok) { showToast('❌ ' + data.error); return; }
 
-      showToast('📧 OTP sent to your email!');
+      showToast('🔑 Use Demo OTP: 123456');
       hide('reg-s1'); show('reg-s2');
       ST.tempUser = { name, email, sid, course, year, budget: budget };
     }
