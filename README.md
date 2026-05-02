@@ -3,6 +3,8 @@
 # 💰 FinYaar
 ### *Smart Campus Finance Tracker*
 
+🚀 **Live Demo:** [https://fin-yaar.vercel.app/](https://fin-yaar.vercel.app/)
+
 ![Platform](https://img.shields.io/badge/Platform-Web%20App-blueviolet?style=for-the-badge)
 ![Stack](https://img.shields.io/badge/Stack-Flask%20%2B%20Vanilla%20JS-orange?style=for-the-badge)
 ![Database](https://img.shields.io/badge/Database-SQLite-blue?style=for-the-badge)
