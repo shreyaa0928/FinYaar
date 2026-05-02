@@ -1254,6 +1254,8 @@ def check_daily_reset():
 # RUN
 # ──────────────────────────────────────
 # Initialize DB for Gunicorn/Render
+import os
+os.makedirs(app.instance_path, exist_ok=True)
 with app.app_context():
     db.create_all()
     try:
