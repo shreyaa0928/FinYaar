@@ -144,22 +144,55 @@ class PasswordReset(db.Model):
 def is_banasthali(email: str) -> bool:
     return email.strip().lower().endswith(f'@{ALLOWED_DOMAIN}')
 
+RESEND_API_KEY = os.getenv('RESEND_API_KEY')
+
 def gen_otp() -> str:
     return ''.join(random.choices(string.digits, k=6))
 
 def send_email(to: str, subject: str, html: str):
-    if not GMAIL_PASS:
-        print("⚠️ [FinYaar] GMAIL_APP_PASS is empty. Skipping email delivery.")
-        return
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = f'FinYaar <{GMAIL_USER}>'
-    msg['To'] = to
-    msg.attach(MIMEText(html, 'html'))
-    # Use port 465 with a strict timeout. If it fails, let the error propagate to the caller.
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as s:
-        s.login(GMAIL_USER, GMAIL_PASS)
-        s.sendmail(GMAIL_USER, to, msg.as_string())
+    # Try Resend API first (Works on Render)
+    if RESEND_API_KEY:
+        try:
+            import requests as resend_req
+            url = "https://api.resend.com/emails"
+            headers = {
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "from": "FinYaar <onboarding@resend.dev>",
+                "to": [to],
+                "subject": subject,
+                "html": html
+            }
+            resp = resend_req.post(url, headers=headers, json=payload, timeout=10)
+            if resp.status_code in [200, 201]:
+                print(f"✅ [FinYaar] Email sent via Resend to {to}")
+                return
+            else:
+                print(f"⚠️ [FinYaar] Resend failed ({resp.status_code}): {resp.text}")
+        except Exception as e:
+            print(f"⚠️ [FinYaar] Resend Error: {e}")
+
+    # Fallback to Gmail SMTP (Works locally, but likely blocked on Render)
+    if GMAIL_USER and GMAIL_PASS:
+        try:
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = subject
+            msg['From'] = f'FinYaar <{GMAIL_USER}>'
+            msg['To'] = to
+            msg.attach(MIMEText(html, 'html'))
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as s:
+                s.login(GMAIL_USER, GMAIL_PASS)
+                s.sendmail(GMAIL_USER, to, msg.as_string())
+            print(f"✅ [FinYaar] Email sent via Gmail to {to}")
+        except Exception as e:
+            print(f"⚠️ [FinYaar] Gmail Error: {e}")
+            raise Exception(f"All email methods failed. {str(e)}")
+    else:
+        print("⚠️ [FinYaar] No email credentials found.")
+        # For demo purposes if both fail, we'll log it but registration will fail.
+        raise Exception("Email configuration missing or blocked.")
 
 def otp_email_html(otp: str, purpose: str) -> str:
     return f"""
