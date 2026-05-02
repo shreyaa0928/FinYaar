@@ -157,7 +157,9 @@ def send_email(to: str, subject: str, html: str):
     msg['To'] = to
     msg.attach(MIMEText(html, 'html'))
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
+        # Use port 587 and timeout to prevent gunicorn from hanging
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=5) as s:
+            s.starttls()
             s.login(GMAIL_USER, GMAIL_PASS)
             s.sendmail(GMAIL_USER, to, msg.as_string())
     except Exception as e:
