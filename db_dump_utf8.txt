@@ -1,0 +1,17 @@
+=== ALL TABLES IN DATABASE ===
+           name
+          users
+password_resets
+       expenses
+  savings_goals
+     portfolios
+   stock_trades
+  notifications
+    finbot_logs
+
+==================================================
+=== USERS TABLE DATA ===
+ user_id         name                           email student_id      course     year                                                                                                                                                           password    role  budget  paper_cash  is_verified                 created_at last_reset_date
+       1 shreya singh btbti23138_shreya@banasthali.in BTBTI23138 B.Tech – IT 3rd Year scrypt:32768:8:1$BDFLSi2lOg1Iv2aW$ec14e68d282501d4f645d4f2ef76810d15e6687133d17456adf74963d7f382978afd45baca534f19172155080b35df7bbd526d3dd2e689892027974f11bef6f8 student 10000.0    100000.0            1 2026-03-29 16:39:42.676997      2026-04-03
+       2         Jiya   btbtc23298_jiya@banasthali.in BTBTC23298 B.Tech – CS 3rd Year scrypt:32768:8:1$q8oJd0mwmCgzfssa$c8547edca0bf1836e4275938939124fbc7cc301b68ddc7c5b4753d2905d4dd8b55a1c5fbe64bebc49091123ed24605f2fc2321522b30634c3476a3dbd8e801b3 student 20000.0    100000.0            1 2026-03-31 16:25:41.637874      2026-04-03
+       3 shreya singh btbti23119_shreya@banasthali.in BTBTI23119 B.Tech – IT 3rd Year scrypt:32768:8:1$FSDKqDiv4Ga1pHY8$680c2cffd72425d7f57bb2e7188f0f42aec5e79dbdeb72bce8fcecf5ca0c1502db2e8e1c428e6ed29b0e623c6e0e0794c7ea455e10482ac218d7f6bcd2d312e7 student 15000.0    100000.0            1 2026-04-01 06:45:20.081343      2026-04-03

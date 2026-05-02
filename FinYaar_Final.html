@@ -1,0 +1,2844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinYaar | Smart Campus Finance Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #FDFCF0;
+      --fin-blue: #107eec;
+      --fin-purple: #E6D8FF;
+      --fin-pink: #FFD6E8;
+      --fin-blue-soft: #C1E8FF;
+      --fin-yellow: #FFED94;
+      --fin-green: #C8F5C8;
+      --brutal-border: 4px solid #000;
+      --brutal-shadow: 10px 10px 0px #000;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-cream);
+      color: #000;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .zee-card {
+      background: #fff;
+      border: var(--brutal-border);
+      box-shadow: var(--brutal-shadow);
+      border-radius: 2.5rem;
+      transition: .3s cubic-bezier(.175, .885, .32, 1.275);
+      position: relative;
+    }
+
+    .zee-card:hover {
+      transform: translate(-5px, -5px);
+      box-shadow: 15px 15px 0px #000;
+    }
+
+    .brutal-btn {
+      background: #000;
+      color: #fff;
+      border: var(--brutal-border);
+      border-radius: 1.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      transition: .2s;
+      cursor: pointer;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .brutal-btn:hover {
+      background: var(--fin-blue);
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0 #000;
+    }
+
+    .brutal-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .brutal-btn-blue {
+      background: var(--fin-blue) !important;
+    }
+
+    .brutal-btn-outline {
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    .brutal-btn-outline:hover {
+      background: var(--fin-yellow) !important;
+    }
+
+    .brutal-btn-red {
+      background: #ef4444 !important;
+    }
+
+    .brutal-btn-green {
+      background: #16a34a !important;
+    }
+
+    input,
+    select,
+    textarea {
+      border: 3px solid #000;
+      padding: 1rem 1.4rem;
+      border-radius: 3rem;
+      font-weight: 700;
+      font-family: inherit;
+      width: 100%;
+      background: #fff;
+      outline: none;
+      margin-bottom: 1rem;
+      transition: .2s;
+      font-size: 14px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--fin-blue);
+      background: var(--fin-blue-soft);
+    }
+
+    input.err {
+      border-color: #ef4444 !important;
+      background: #fff1f2 !important;
+    }
+
+    .err-msg {
+      color: #ef4444;
+      font-weight: 800;
+      font-size: 12px;
+      margin: -8px 0 10px 16px;
+      display: none;
+    }
+
+    .err-msg.show {
+      display: block;
+    }
+
+    .nav-active {
+      background: var(--fin-blue) !important;
+      color: #fff !important;
+      border: 3px solid #000 !important;
+      box-shadow: 4px 4px 0 #000 !important;
+    }
+
+    .page-content {
+      display: none;
+    }
+
+    .page-active {
+      display: block;
+      animation: slideUp .4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #000;
+      border-radius: 8px;
+      border: 2px solid var(--bg-cream);
+    }
+
+    .bubble-bot {
+      background: var(--fin-purple);
+      border: 3px solid #000;
+      border-radius: 2rem 2rem 2rem 0;
+      padding: 1.5rem;
+      max-width: 82%;
+      font-weight: 700;
+      box-shadow: 5px 5px 0 #000;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .bubble-user {
+      background: var(--fin-blue-soft);
+      border: 3px solid #000;
+      border-radius: 2rem 2rem 0 2rem;
+      padding: 1.5rem;
+      max-width: 82%;
+      font-weight: 700;
+      align-self: flex-end;
+      box-shadow: 5px 5px 0 #000;
+      font-size: 15px;
+    }
+
+    .hub-tag {
+      background: #000;
+      color: #fff;
+      padding: 4px 14px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: inline-block;
+      letter-spacing: 1px;
+    }
+
+    .hub-tag-blue {
+      background: var(--fin-blue);
+    }
+
+    .hub-tag-green {
+      background: #16a34a;
+    }
+
+    /* OTP inputs */
+    .otp-grid {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .otp-single {
+      width: 54px;
+      height: 60px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 900;
+      border-radius: 1rem;
+      padding: 0;
+      margin-bottom: 0;
+    }
+
+    /* Ticker */
+    .ticker-strip {
+      background: #000;
+      color: #fff;
+      border-top: 4px solid #000;
+      border-bottom: 4px solid #000;
+      overflow: hidden;
+      padding: 10px 0;
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 60px;
+      width: max-content;
+      animation: scrollticker 30s linear infinite;
+    }
+
+    .ticker-inner:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scrollticker {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Progress */
+    .prog-track {
+      width: 100%;
+      height: 16px;
+      border: 4px solid #000;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--bg-cream);
+    }
+
+    .prog-fill {
+      height: 100%;
+      transition: width .8s cubic-bezier(.175, .885, .32, 1.275);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #fff;
+      border: var(--brutal-border);
+      box-shadow: 15px 15px 0 #000;
+      border-radius: 2.5rem;
+      padding: 2.5rem;
+      width: 95%;
+      max-width: 500px;
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: slideUp .3s ease;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #000;
+      color: #fff;
+      padding: 1rem 1.8rem;
+      border-radius: 2rem;
+      font-weight: 800;
+      font-size: 14px;
+      border: 4px solid #000;
+      box-shadow: 8px 8px 0 #000;
+      transform: translateY(120px);
+      opacity: 0;
+      transition: .35s;
+      z-index: 999;
+      max-width: 340px;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .tick-up {
+      color: #16a34a;
+      font-weight: 800;
+    }
+
+    .tick-down {
+      color: #ef4444;
+      font-weight: 800;
+    }
+
+    /* Profile badge */
+    .profile-badge {
+      width: 100px;
+      height: 100px;
+      border: 5px solid #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      font-weight: 900;
+      box-shadow: 7px 7px 0 #000;
+    }
+
+    /* Mobile Tweaks */
+    @media (max-width: 768px) {
+      .zee-card {
+        border-radius: 1.5rem;
+        padding: 1.5rem !important;
+      }
+
+      h1 {
+        font-size: 48px !important;
+      }
+
+      nav .max-w-7xl {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      nav .flex-wrap {
+        justify-content: center;
+        overflow-x: auto;
+        white-space: nowrap;
+        width: 100%;
+        padding-bottom: 5px;
+      }
+
+      nav .flex-wrap::-webkit-scrollbar {
+        display: none;
+      }
+
+      .grid-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+
+      .text-6xl {
+        font-size: 2.5rem !important;
+      }
+
+      .modal-box {
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════
+  SCREEN 1 — INTRO
+═══════════════════════════════ -->
+  <div id="introPage">
+    <section class="min-h-screen flex flex-col items-center justify-center p-6" style="background:var(--fin-yellow)">
+      <div class="zee-card p-12 text-center w-full max-w-3xl bg-white">
+        <h1 class="font-black italic uppercase tracking-tighter leading-none mb-3"
+          style="font-size:clamp(64px,12vw,120px)">FinYaar</h1>
+        <p class="font-black uppercase tracking-[.2em] mb-2"
+          style="color:var(--fin-blue);font-size:clamp(12px,2vw,20px)">Master Your Money. Own Your Future.</p>
+        <p class="font-bold text-sm opacity-50 mb-10 uppercase tracking-widest"></p>
+        <div class="grid grid-cols-3 gap-5 mb-10">
+          <div class="p-6 border-4 border-black rounded-3xl" style="background:var(--fin-pink)"><i
+              class="fa-solid fa-receipt text-3xl mb-3 block"></i>
+            <p class="font-black uppercase text-xs">Expense Tracker</p>
+          </div>
+          <div class="p-6 border-4 border-black rounded-3xl" style="background:var(--fin-blue-soft)"><i
+              class="fa-solid fa-chart-line text-3xl mb-3 block"></i>
+            <p class="font-black uppercase text-xs">Paper Trading</p>
+          </div>
+          <div class="p-6 border-4 border-black rounded-3xl" style="background:var(--fin-purple)"><i
+              class="fa-solid fa-robot text-3xl mb-3 block"></i>
+            <p class="font-black uppercase text-xs">FinBot AI</p>
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-5 justify-center">
+          <button onclick="showAuth('register')" class="brutal-btn py-5 px-14 text-xl">Register</button>
+          <button onclick="showAuth('login')" class="brutal-btn brutal-btn-outline py-5 px-14 text-xl">Login</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════
+  SCREEN 2 — AUTH
+═══════════════════════════════ -->
+  <div id="authPage" class="hidden min-h-screen flex items-center justify-center p-6"
+    style="background:var(--fin-blue)">
+    <div class="zee-card p-10 w-full max-w-lg">
+      <div class="text-center mb-8">
+        <h2 class="font-black italic uppercase tracking-tighter leading-none" style="font-size:52px">FinYaar</h2>
+        <p class="font-black uppercase text-xs tracking-widest opacity-50 mt-1">Banasthali Vidyapith</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="flex gap-2 p-1.5 border-4 border-black rounded-2xl mb-8" style="background:var(--bg-cream)">
+        <button id="tab-login" onclick="switchAuthTab('login')"
+          class="flex-1 py-3 rounded-xl font-black uppercase text-sm nav-active transition-all">Login</button>
+        <button id="tab-register" onclick="switchAuthTab('register')"
+          class="flex-1 py-3 rounded-xl font-black uppercase text-sm transition-all">Register</button>
+      </div>
+
+      <!-- ── LOGIN ── -->
+      <div id="login-panel">
+        <div id="login-s1">
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Campus Email</label>
+          <input id="li-email" type="email" placeholder="yourname@banasthali.in"
+            oninput="clearFieldErr('li-email','li-email-err')">
+          <div id="li-email-err" class="err-msg">⚠ Only @banasthali.in emails are allowed</div>
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Password</label>
+          <input id="li-pass" type="password" placeholder="Your password">
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg mt-2" onclick="doLogin()">Login <i
+              class="fa-solid fa-right-to-bracket"></i></button>
+          <p class="text-center text-xs font-black mt-4 opacity-50"><span
+              class="underline cursor-pointer hover:opacity-100" onclick="showForgot()">Forgot Password?</span></p>
+          <p class="text-center text-xs font-black mt-2 opacity-40 cursor-pointer hover:opacity-70" onclick="goIntro()">
+            ←
+            Back to Home</p>
+        </div>
+        <!-- Login OTP Step -->
+        <div id="login-s2" class="hidden">
+          <h3 class="font-black text-2xl italic uppercase mb-2 text-center text-blue-600">Enter Login OTP</h3>
+          <p class="text-center text-xs font-bold opacity-60 mb-6">Sent to your Banasthali email</p>
+          <div class="otp-grid mb-6">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,0,'login')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,1,'login')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,2,'login')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,3,'login')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,4,'login')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,5,'login')">
+          </div>
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg" onclick="verifyLoginOTP()">Verify & Login <i
+              class="fa-solid fa-check"></i></button>
+          <p class="text-center text-xs font-black mt-4 opacity-50 cursor-pointer hover:opacity-100 underline"
+            onclick="hide('login-s2'); show('login-s1');">← Back</p>
+        </div>
+      </div>
+
+      <!-- ── REGISTER ── -->
+      <div id="register-panel" class="hidden">
+        <!-- Step 1 -->
+        <div id="reg-s1">
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Full Name</label>
+          <input id="r-name" type="text" placeholder="Shreya Sharma">
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Banasthali Email
+            *</label>
+          <input id="r-email" type="email" placeholder="yourname@banasthali.in"
+            oninput="clearFieldErr('r-email','r-email-err')">
+          <div id="r-email-err" class="err-msg">⚠ Only @banasthali.in emails are allowed</div>
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Student ID / Roll
+            No.</label>
+          <input id="r-sid" type="text" placeholder="e.g. BTBTC12345">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Course</label>
+              <select id="r-course">
+                <option value="">Select Course</option>
+                <option>B.Tech – CS</option>
+                <option>B.Tech – IT</option>
+                <option>B.Tech – ECE</option>
+                <option>BCA</option>
+                <option>MCA</option>
+                <option>MBA</option>
+                <option>B.Com</option>
+                <option>BSc</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Year</label>
+              <select id="r-year">
+                <option value="">Year</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+                <option>PG</option>
+              </select>
+            </div>
+          </div>
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Monthly Budget (Wallet
+            ₹)</label>
+          <input id="r-budget" type="number" placeholder="e.g. 55000" min="0">
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Password</label>
+          <input id="r-pass" type="password" placeholder="Min 8 characters">
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg mt-2" onclick="sendRegOTP()">Send OTP to Email
+            <i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+        <!-- Step 2 -->
+        <div id="reg-s2" class="hidden">
+          <h3 class="font-black text-2xl italic uppercase mb-2 text-center text-blue-600">Enter OTP</h3>
+          <p class="text-center text-xs font-bold opacity-60 mb-6">Sent to your Banasthali email</p>
+          <div class="otp-grid mb-6">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,0,'reg')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,1,'reg')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,2,'reg')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,3,'reg')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,4,'reg')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,5,'reg')">
+          </div>
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg" onclick="verifyRegOTP()">Verify Registration <i
+              class="fa-solid fa-check"></i></button>
+          <p class="text-center text-xs font-black mt-4 opacity-50 cursor-pointer hover:opacity-100 underline"
+            onclick="hide('reg-s2'); show('reg-s1');">← Back</p>
+        </div>
+      </div>
+
+      <!-- ── FORGOT PASSWORD ── -->
+      <div id="forgot-panel" class="hidden">
+        <!-- Step 1: Email -->
+        <div id="fp-s1">
+          <h3 class="font-black text-2xl italic uppercase mb-6 text-center">Reset Password</h3>
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Campus Email</label>
+          <input id="fp-email" type="email" placeholder="yourname@banasthali.in">
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg mt-2" onclick="sendFPOTP()">Send OTP <i
+              class="fa-solid fa-paper-plane"></i></button>
+          <p class="text-center text-xs font-black mt-4 opacity-50 cursor-pointer hover:opacity-100 underline"
+            onclick="showAuth('login')">← Back to Login</p>
+        </div>
+        <!-- Step 2: OTP -->
+        <div id="fp-s2" class="hidden">
+          <h3 class="font-black text-2xl italic uppercase mb-2 text-center text-blue-600">Enter Reset OTP</h3>
+          <p class="text-center text-xs font-bold opacity-60 mb-6">Sent to your Banasthali email</p>
+          <div class="otp-grid mb-6">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,0,'fp')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,1,'fp')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,2,'fp')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,3,'fp')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,4,'fp')">
+            <input type="text" class="otp-single font-black text-2xl" maxlength="1" onkeyup="otpNav(this,5,'fp')">
+          </div>
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg" onclick="showFPS3()">Verify OTP <i
+              class="fa-solid fa-check"></i></button>
+          <p class="text-center text-xs font-black mt-4 opacity-40 cursor-pointer hover:opacity-70 underline"
+            onclick="hide('fp-s2'); show('fp-s1');">← Incorrect Email?</p>
+        </div>
+        <!-- Step 3: Password -->
+        <div id="fp-s3" class="hidden">
+          <h3 class="font-black text-2xl italic uppercase mb-6 text-center">Set New Password</h3>
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">New Password</label>
+          <input id="fp-np" type="password" placeholder="New password">
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Confirm
+            Password</label>
+          <input id="fp-cp" type="password" placeholder="Re-enter password">
+          <button class="brutal-btn brutal-btn-blue w-full py-5 text-lg mt-2" onclick="doResetPassword()">Update
+            Password <i class="fa-solid fa-save"></i></button>
+          <p class="text-center text-xs font-black mt-4 opacity-40 cursor-pointer hover:opacity-70 underline"
+            onclick="hide('fp-s3'); show('fp-s2');">← Back to OTP</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+  SCREEN 3 — WELCOME
+═══════════════════════════════ -->
+  <div id="welcomePage" class="hidden min-h-screen flex items-center justify-center p-6"
+    style="background:var(--fin-purple)">
+    <div class="zee-card p-16 max-w-2xl w-full text-center bg-white">
+      <div
+        class="inline-block bg-black text-white px-8 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-8">
+        Authorized ✅</div>
+      <h2 class="font-black italic uppercase leading-none mb-6" style="font-size:clamp(52px,8vw,80px)">Sup, <span
+          id="welcome-name" style="color:var(--fin-blue)">User</span>!</h2>
+      <p class="text-xl font-bold mb-4 opacity-80">Your paper wallet is loaded with <span
+          class="text-green-600 text-2xl font-black">₹1,00,000</span>. Ready to beat the market?</p>
+      <p class="text-sm font-bold opacity-50 mb-10" id="welcome-sub">Student ID: – · Course: –</p>
+      <button onclick="enterApp()" class="brutal-btn w-full py-6 text-2xl">Enter Dashboard <i
+          class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+  SCREEN 4 — MAIN APP
+═══════════════════════════════ -->
+  <div id="mainApp" class="hidden min-h-screen flex flex-col">
+
+    <!-- Live Ticker -->
+    <div class="ticker-strip">
+      <div class="ticker-inner" id="ticker-inner"></div>
+    </div>
+
+    <!-- Top Nav -->
+    <nav class="bg-white border-b-8 border-black p-5 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <h2 class="font-black italic text-4xl tracking-tighter cursor-pointer" onclick="showPage('dash')">FINYAAR</h2>
+        <div class="flex overflow-x-auto pb-2 md:pb-0 gap-2 w-full md:w-auto custom-scroll">
+          <button onclick="showPage('dash')" id="btn-dash"
+            class="nav-active px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">Dashboard</button>
+          <button onclick="showPage('expense')" id="btn-expense"
+            class="px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">Expenses</button>
+          <button onclick="showPage('savings')" id="btn-savings"
+            class="px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">Savings
+            Goals</button>
+          <button onclick="showPage('trading')" id="btn-trading"
+            class="px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">Portfolio <span
+              class="ml-1 bg-green-500 text-white text-[8px] px-1.5 py-0.5 rounded-full">LIVE</span></button>
+          <button onclick="showPage('hub')" id="btn-hub"
+            class="px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">Knowledge
+            Hub</button>
+          <button onclick="showPage('bot')" id="btn-bot"
+            class="px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">FinBot</button>
+          <button onclick="showPage('profile')" id="btn-profile"
+            class="px-4 py-2 rounded-2xl font-black text-[10px] uppercase tracking-wider transition-all">Profile</button>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="font-black text-sm" id="nav-user-name">User</div>
+          <button onclick="doLogout()"
+            class="font-black text-red-500 border-b-4 border-red-500 uppercase text-xs hover:text-red-700">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto w-full p-8 md:p-12 flex-1">
+
+      <!-- ── DASHBOARD ── -->
+      <div id="page-dash" class="page-content page-active">
+        <div class="flex justify-between items-end mb-12">
+          <div>
+            <h2 class="text-6xl font-black italic tracking-tighter">Campus <span
+                style="color:var(--fin-blue)">Pulse</span></h2>
+            <p class="font-black opacity-40 uppercase tracking-widest text-xs mt-2" id="dash-date-str"></p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button class="brutal-btn brutal-btn-outline py-3 px-6 text-sm flex-1"
+              onclick="openModal('modal-expense')"><i class="fa-solid fa-plus"></i> Log Spend</button>
+            <button class="brutal-btn brutal-btn-blue py-3 px-6 text-sm flex-1" onclick="showPage('trading')"><i
+                class="fa-solid fa-chart-line"></i> Trade Now</button>
+          </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div class="zee-card p-8" style="background:var(--fin-blue-soft)">
+            <div class="flex justify-between items-center mb-2">
+              <p class="text-xs font-black opacity-60 uppercase">Real Wallet</p>
+              <button class="bg-black text-white text-[10px] px-2 py-1 rounded-lg font-black"
+                onclick="openModal('modal-topup')">+ TOPUP</button>
+            </div>
+            <h3 class="text-4xl font-black" id="dash-wallet">₹55,000</h3>
+            <p class="text-xs font-bold opacity-40 mt-1">Remaining budget</p>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-pink)">
+            <p class="text-xs font-black opacity-60 uppercase mb-2">Total Spend</p>
+            <h3 class="text-4xl font-black" id="dash-spend">₹0</h3>
+            <p class="text-xs font-bold opacity-40 mt-1">This month</p>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-yellow)">
+            <p class="text-xs font-black opacity-60 uppercase mb-2">Paper Cash</p>
+            <h3 class="text-4xl font-black" id="dash-paper">₹1,00,000</h3>
+            <p class="text-xs font-bold opacity-40 mt-1">Virtual trading</p>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-purple)">
+            <p class="text-xs font-black opacity-60 uppercase mb-2">Holdings</p>
+            <h3 class="text-4xl font-black" id="dash-holdings">₹0</h3>
+            <p class="text-xs font-bold opacity-40 mt-1">Portfolio value</p>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-10">
+          <div class="md:col-span-4 zee-card p-8" style="height:420px">
+            <h4 class="font-black italic uppercase text-sm mb-6">Spending DNA 🧬</h4>
+            <div style="height:280px;position:relative"><canvas id="dnaChart"></canvas></div>
+            <div class="grid grid-cols-2 gap-1 mt-4 text-xs font-black">
+              <div><span
+                  style="width:10px;height:10px;background:var(--fin-yellow);border:2px solid #000;border-radius:2px;display:inline-block;margin-right:4px"></span>Food
+              </div>
+              <div><span
+                  style="width:10px;height:10px;background:var(--fin-blue-soft);border:2px solid #000;border-radius:2px;display:inline-block;margin-right:4px"></span>Travel
+              </div>
+              <div><span
+                  style="width:10px;height:10px;background:var(--fin-purple);border:2px solid #000;border-radius:2px;display:inline-block;margin-right:4px"></span>Study
+              </div>
+              <div><span
+                  style="width:10px;height:10px;background:var(--fin-green);border:2px solid #000;border-radius:2px;display:inline-block;margin-right:4px"></span>Health
+              </div>
+            </div>
+          </div>
+          <div class="md:col-span-8 zee-card p-8" style="height:420px">
+            <h4 class="font-black italic uppercase text-sm mb-6">Monthly Expense Trend 📊</h4>
+            <div style="height:330px;position:relative"><canvas id="trendChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Recent Vibes -->
+        <div class="zee-card p-10 bg-white">
+          <div class="flex justify-between items-center mb-8">
+            <h4 class="font-black italic uppercase text-sm">Recent Vibes ⚡</h4>
+            <button class="brutal-btn brutal-btn-outline py-2 px-5 text-xs" onclick="showPage('expense')">View
+              All</button>
+          </div>
+          <div id="dash-activity" class="space-y-4">
+            <p class="font-black opacity-30 text-sm text-center py-4">No transactions yet. Log your first spend!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EXPENSES ── -->
+      <div id="page-expense" class="page-content">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+          <!-- Form -->
+          <div class="md:col-span-5 zee-card p-10" style="background:var(--fin-pink)">
+            <h3 class="text-3xl font-black mb-8 italic uppercase tracking-tighter">Log Spend</h3>
+            <label class="block text-xs font-black uppercase tracking-widest ml-4 mb-1 opacity-60">Merchant /
+              Description</label>
+            <input id="exTitle" type="text" placeholder="Zomato, Uber, Stationary...">
+            <label class="block text-xs font-black uppercase tracking-widest ml-4 mb-1 opacity-60">Amount (₹)</label>
+            <input id="exAmt" type="number" placeholder="0.00" min="1">
+            <label class="block text-xs font-black uppercase tracking-widest ml-4 mb-1 opacity-60">Category</label>
+            <select id="exCat">
+              <option value="Food">🍔 Food & Drinks</option>
+              <option value="Travel">🚕 Transport</option>
+              <option value="Study">📚 Academic</option>
+
+              <option value="Health">💊 Health</option>
+              <option value="Shopping">🛍️ Shopping</option>
+            </select>
+            <label class="block text-xs font-black uppercase tracking-widest ml-4 mb-1 opacity-60">Date</label>
+            <input id="exDate" type="date">
+            <button class="brutal-btn w-full py-5 text-xl mt-2" onclick="handleNewExpense()">Record Transaction</button>
+          </div>
+          <!-- History + Mini Chart -->
+          <div class="md:col-span-7 flex flex-col gap-8">
+            <div class="zee-card p-8">
+              <h4 class="font-black italic uppercase text-sm mb-5">Breakdown by Category</h4>
+              <div style="height:200px;position:relative"><canvas id="catBarChart"></canvas></div>
+            </div>
+            <div>
+              <h3 class="text-3xl font-black mb-6 italic uppercase">Full History</h3>
+              <div id="full-history-list" class="space-y-4 max-h-[500px] overflow-y-auto custom-scroll pr-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SAVINGS ── -->
+      <div id="page-savings" class="page-content">
+        <div class="flex justify-between items-center mb-12">
+          <h2 class="text-5xl font-black italic uppercase">Vault Goals 🎯</h2>
+          <button onclick="openModal('modal-goal')" class="brutal-btn py-3 px-8 text-sm"><i
+              class="fa-solid fa-plus"></i> New Goal</button>
+        </div>
+        <!-- Summary -->
+        <div class="grid grid-cols-4 gap-6 mb-10">
+          <div class="zee-card p-6" style="background:var(--fin-purple)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Active Goals</p>
+            <p class="text-4xl font-black" id="sv-active">0</p>
+          </div>
+          <div class="zee-card p-6" style="background:var(--fin-yellow)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Total Saved</p>
+            <p class="text-3xl font-black" id="sv-total">₹0</p>
+          </div>
+          <div class="zee-card p-6" style="background:var(--fin-green)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Completed</p>
+            <p class="text-4xl font-black" id="sv-done">0</p>
+          </div>
+          <div class="zee-card p-6" style="background:var(--fin-blue-soft)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Avg Progress</p>
+            <p class="text-4xl font-black" id="sv-avg">0%</p>
+          </div>
+        </div>
+        <div id="savings-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+
+        <!-- Goal History Section -->
+        <div id="savings-history-section" class="mt-20 hidden">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="h-1 flex-1 bg-black opacity-10"></div>
+            <h3 class="text-3xl font-black italic uppercase opacity-40">Goal History 📜</h3>
+            <div class="h-1 flex-1 bg-black opacity-10"></div>
+          </div>
+          <div id="savings-history-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 opacity-60"></div>
+        </div>
+      </div>
+
+      <!-- ── TRADING / PORTFOLIO ── -->
+      <div id="page-trading" class="page-content">
+        <div class="flex justify-between items-end mb-10">
+          <div>
+            <h2 class="text-5xl font-black italic uppercase tracking-tighter">Portfolio 📈</h2>
+            <p class="font-bold opacity-50 text-sm mt-1" id="trading-subtitle">Practice with ₹1,00,000 virtual cash ·
+              <span id="market-status-msg"><span class="text-green-500 font-black">MARKET OPEN</span> · Simulated Live
+                NSE/BSE</span>
+            </p>
+          </div>
+          <button class="brutal-btn brutal-btn-blue py-3 px-8 text-sm" onclick="openModal('modal-trade')"><i
+              class="fa-solid fa-bolt"></i> Quick Order</button>
+        </div>
+        <!-- Portfolio Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+          <div class="zee-card p-6" style="background:var(--fin-yellow)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Paper Cash</p>
+            <p class="text-3xl font-black" id="t-cash">₹1,00,000</p>
+          </div>
+          <div class="zee-card p-6" style="background:var(--fin-blue-soft)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Portfolio Value</p>
+            <p class="text-3xl font-black" id="t-port">₹0</p>
+          </div>
+          <div class="zee-card p-6" style="background:var(--fin-green)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Total P&amp;L</p>
+            <p class="text-3xl font-black" id="t-pnl">₹0</p>
+          </div>
+          <div class="zee-card p-6" style="background:var(--fin-pink)">
+            <p class="text-xs font-black uppercase opacity-60 mb-1">Trades Done</p>
+            <p class="text-3xl font-black" id="t-count">0</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <!-- Market + Price Chart -->
+          <div class="md:col-span-8 flex flex-col gap-8">
+            <!-- Stock Line Chart -->
+            <div class="zee-card p-8">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="font-black italic uppercase text-sm">Price Chart – <span id="chart-sym-label">RELIANCE</span>
+                </h4>
+                <div class="flex gap-2 flex-wrap">
+                  <button class="brutal-btn brutal-btn-outline text-xs px-3 py-1.5"
+                    onclick="switchPriceChart('RELIANCE')">RELIANCE</button>
+                  <button class="brutal-btn brutal-btn-outline text-xs px-3 py-1.5"
+                    onclick="switchPriceChart('TCS')">TCS</button>
+                  <button class="brutal-btn brutal-btn-outline text-xs px-3 py-1.5"
+                    onclick="switchPriceChart('HDFCBANK')">HDFC</button>
+                  <button class="brutal-btn brutal-btn-outline text-xs px-3 py-1.5"
+                    onclick="switchPriceChart('INFY')">INFY</button>
+                  <button class="brutal-btn brutal-btn-outline text-xs px-3 py-1.5"
+                    onclick="switchPriceChart('WIPRO')">WIPRO</button>
+                </div>
+              </div>
+              <div style="height:220px;position:relative"><canvas id="stockPriceChart"></canvas></div>
+            </div>
+            <!-- Market Watch -->
+            <div class="zee-card p-0 overflow-hidden">
+              <div class="p-6 border-b-4 border-black flex justify-between items-center"
+                style="background:var(--bg-cream)">
+                <h3 class="text-2xl font-black italic">Markets 📡</h3>
+                <input type="text" id="mkt-search" placeholder="Search..." oninput="renderMarket()"
+                  style="width:160px;padding:8px 14px;font-size:12px;margin-bottom:0;border-radius:999px">
+              </div>
+              <div id="market-list" class="divide-y-4 divide-black"></div>
+            </div>
+          </div>
+
+          <!-- Holdings + Journal + Portfolio Donut -->
+          <div class="md:col-span-4 flex flex-col gap-8">
+            <div class="zee-card p-8" style="background:var(--fin-blue-soft)">
+              <h3 class="text-2xl font-black mb-6 italic">Active Holdings</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full font-black text-sm">
+                  <thead class="uppercase border-b-4 border-black text-xs">
+                    <tr>
+                      <th class="pb-3 text-left">Ticker</th>
+                      <th class="pb-3">Qty</th>
+                      <th class="pb-3">Avg</th>
+                      <th class="pb-3 text-right">P&amp;L</th>
+                    </tr>
+                  </thead>
+                  <tbody id="holdings-body"></tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Portfolio Donut -->
+            <div class="zee-card p-8">
+              <h4 class="font-black italic uppercase text-sm mb-4">Portfolio Mix</h4>
+              <div style="height:180px;position:relative"><canvas id="portfolioDonut"></canvas></div>
+            </div>
+            <!-- Journal -->
+            <div class="zee-card p-8 bg-white">
+              <h3 class="text-xl font-black mb-5 italic">Trading Journal 📖</h3>
+              <input id="jStock" type="text" placeholder="Stock Symbol (e.g. TCS)" style="margin-bottom:10px">
+              <select id="jAction" style="margin-bottom:10px">
+                <option>Buy/Long</option>
+                <option>Sell/Short</option>
+                <option>Hold</option>
+                <option>Watch</option>
+              </select>
+              <textarea id="jReason" rows="2" placeholder="Why this trade? Your reasoning..."
+                style="border-radius:1.5rem;resize:none;margin-bottom:10px"></textarea>
+              <button class="brutal-btn w-full py-4 text-sm" onclick="addJournal()">Save Entry</button>
+              <div id="journal-feed" class="mt-6 space-y-3 max-h-52 overflow-y-auto custom-scroll"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── KNOWLEDGE HUB ── -->
+      <div id="page-hub" class="page-content">
+        <div class="flex justify-between items-center mb-12">
+          <h2 class="text-5xl font-black italic uppercase">Knowledge Hub 📚</h2>
+
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          <div class="zee-card p-8" style="background:var(--fin-blue-soft)">
+            <span class="hub-tag hub-tag-blue">Investing</span>
+            <h3 class="text-2xl font-black mb-4 italic uppercase">What is the Stock Market?</h3>
+            <p class="text-sm font-bold opacity-70 mb-6">How stocks work, what drives prices, and how to read basic
+              charts like a pro.</p>
+            <a href="https://www.investopedia.com/articles/investing/082614/how-stock-market-works.asp" target="_blank"
+              rel="noopener">
+              <button class="brutal-btn w-full py-3 text-sm">Read Article →</button>
+            </a>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-yellow)">
+            <span class="hub-tag">Budgeting</span>
+            <h3 class="text-2xl font-black mb-4 italic uppercase">Mutual Funds 101</h3>
+            <p class="text-sm font-bold opacity-70 mb-6">SIPs for ₹500/month. Understand NAV, diversification, and
+              long-term returns.</p>
+            <button class="brutal-btn w-full py-3 text-sm"
+              onclick="window.open('https://www.youtube.com/watch?v=U1w80AsDwSE', '_blank')">Watch Video →</button>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-pink)">
+            <span class="hub-tag hub-tag-blue">Investing</span>
+            <h3 class="text-2xl font-black mb-4 italic uppercase">SIP & Mutual Funds 101</h3>
+            <p class="text-sm font-bold opacity-70 mb-6">Learn how Systematic Investment Plans (SIP) work and how
+              regular, small investments can grow into large wealth over time.</p>
+            <button class="brutal-btn w-full py-3 text-sm"
+              onclick="window.open('https://en.wikipedia.org/wiki/Systematic_investment_plan', '_blank')">Read Guide
+              →</button>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-purple)">
+            <span class="hub-tag hub-tag-green">Basics</span>
+            <h3 class="text-2xl font-black mb-4 italic uppercase">Compound Interest</h3>
+            <p class="text-sm font-bold opacity-70 mb-6">The 8th wonder of the world. Why starting at 20 vs 30 makes
+              crore-level difference.</p>
+            <a href="https://www.investopedia.com/terms/c/compoundinterest.asp" target="_blank" rel="noopener">
+              <button class="brutal-btn w-full py-3 text-sm">Learn More →</button>
+            </a>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-green)">
+            <span class="hub-tag">Tax Basics</span>
+            <h3 class="text-2xl font-black mb-4 italic uppercase">GST for Students</h3>
+            <p class="text-sm font-bold opacity-70 mb-6">Understand how GST impacts your spending, from Zomato orders
+              to campus stationary bills.</p>
+            <button class="brutal-btn w-full py-3 text-sm"
+              onclick="window.open('https://cleartax.in/s/gst-law-goods-and-services-tax-india', '_blank')">Learn GST
+              →</button>
+          </div>
+          <div class="zee-card p-8" style="background:var(--fin-blue-soft)">
+            <span class="hub-tag hub-tag-blue">Advanced</span>
+            <h3 class="text-2xl font-black mb-4 italic uppercase">Risk Management</h3>
+            <p class="text-sm font-bold opacity-70 mb-6">Stop-loss, position sizing, and portfolio diversification —
+              simplified for students.</p>
+            <button class="brutal-btn w-full py-3 text-sm"
+              onclick="window.open('https://www.investopedia.com/articles/basics/03/050203.asp', '_blank')">Read More
+              →</button>
+          </div>
+        </div>
+        <!-- 50/30/20 Banner -->
+        <div class="zee-card p-12 bg-black text-white">
+          <div class="flex flex-col md:flex-row gap-10 items-center">
+            <div class="flex-1">
+              <h3 class="text-5xl font-black italic mb-6" style="color:var(--fin-yellow)">THE 50/30/20 RULE</h3>
+              <p class="text-lg font-bold mb-6 opacity-80">The golden ratio for students. 50% for Needs · 30% for Wants
+                · 20% for the Future.</p>
+              <div class="flex gap-4 flex-wrap">
+                <div class="px-5 py-3 border-4 border-white rounded-2xl text-center">
+                  <div class="text-2xl font-black" style="color:var(--fin-yellow)">50%</div>
+                  <div class="text-xs font-black opacity-60">Needs</div>
+                </div>
+                <div class="px-5 py-3 border-4 border-white rounded-2xl text-center">
+                  <div class="text-2xl font-black" style="color:var(--fin-pink)">30%</div>
+                  <div class="text-xs font-black opacity-60">Wants</div>
+                </div>
+                <div class="px-5 py-3 border-4 border-white rounded-2xl text-center">
+                  <div class="text-2xl font-black" style="color:var(--fin-green)">20%</div>
+                  <div class="text-xs font-black opacity-60">Future</div>
+                </div>
+              </div>
+            </div>
+            <div class="w-52 h-52" style="position:relative"><canvas id="ruleChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FINBOT ── -->
+      <div id="page-bot" class="page-content">
+        <div class="zee-card flex flex-col overflow-hidden bg-white" style="height:700px">
+          <div class="p-8 border-b-8 border-black flex items-center gap-6" style="background:var(--fin-blue)">
+            <div
+              class="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-3xl border-4 border-white"
+              style="box-shadow:4px 4px 0 rgba(0,0,0,.3)"><i class="fa-solid fa-robot"></i></div>
+            <div>
+              <h3 class="text-2xl font-black text-white italic">FinBot AI</h3>
+              <p class="text-xs font-black uppercase tracking-widest animate-pulse" style="color:var(--fin-yellow)">Your
+                Campus Finance Brain</p>
+            </div>
+            <div
+              class="ml-auto bg-green-400 text-black text-xs font-black px-3 py-1 rounded-full border-2 border-black">●
+              Online</div>
+          </div>
+          <!-- Quick Prompts -->
+          <div class="px-8 pt-5 pb-0 flex gap-3 flex-wrap border-b-4 border-black pb-4"
+            style="background:var(--bg-cream)">
+            <button class="brutal-btn brutal-btn-outline text-xs px-4 py-2" onclick="quickBot('Give me budget tips')">💡
+              Budget Tips</button>
+            <button class="brutal-btn brutal-btn-outline text-xs px-4 py-2"
+              onclick="quickBot('How to start investing?')">📈 Start Investing</button>
+            <button class="brutal-btn brutal-btn-outline text-xs px-4 py-2"
+              onclick="quickBot('Explain paper trading')">🤖 Paper Trading</button>
+            <button class="brutal-btn brutal-btn-outline text-xs px-4 py-2" onclick="quickBot('Analyze my spending')">📊
+              My Spending</button>
+            <button class="brutal-btn brutal-btn-outline text-xs px-4 py-2"
+              onclick="quickBot('What is compound interest?')">🧮 Compound Interest</button>
+          </div>
+          <div id="chatArea" class="flex-1 overflow-y-auto p-10 flex flex-col gap-6 custom-scroll">
+            <div class="bubble-bot">Sup! I'm <strong>FinBot</strong> 🤖 — your AI finance buddy at
+              Banasthali.<br><br>I've been watching your Spending DNA and Paper Trades. Ask me anything about budgeting,
+              savings, or the stock market. How can I help you hustle today?</div>
+          </div>
+          <div class="p-8 border-t-8 border-black flex gap-5" style="background:var(--bg-cream)">
+            <input id="chatIn" placeholder="Ask FinBot anything about finance..." style="margin-bottom:0"
+              onkeydown="if(event.key==='Enter')sendMessage()">
+            <button onclick="sendMessage()" class="brutal-btn px-10 text-sm"><i
+                class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div id="page-profile" class="page-content">
+        <h2 class="text-5xl font-black italic uppercase mb-10">My Profile 👤</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Profile Card -->
+          <div class="zee-card p-10 text-center col-span-1" style="background:var(--fin-yellow)">
+            <div class="profile-badge mx-auto mb-5" id="prof-avatar">S</div>
+            <h3 class="font-black text-3xl italic mb-1" id="prof-name">Shreya Sharma</h3>
+            <p class="font-bold text-sm opacity-60 mb-3" id="prof-email">name@banasthali.in</p>
+            <div class="inline-block bg-black text-white text-xs font-black px-4 py-1 rounded-full mb-3" id="prof-sid">
+              Student ID</div>
+            <div class="flex gap-2 justify-center flex-wrap mb-6">
+              <span class="border-3 border-black bg-white px-3 py-1 rounded-xl font-black text-xs"
+                id="prof-course">Course</span>
+              <span class="border-3 border-black bg-white px-3 py-1 rounded-xl font-black text-xs"
+                id="prof-year">Year</span>
+            </div>
+            <button class="brutal-btn brutal-btn-outline w-full py-3 text-sm"
+              onclick="openModal('modal-edit-profile')"><i class="fa-solid fa-pen"></i> Edit Profile</button>
+          </div>
+          <!-- Stats + Achievements -->
+          <div class="col-span-2 flex flex-col gap-6">
+            <div class="zee-card p-8">
+              <h4 class="font-black italic uppercase text-sm mb-6">Financial Summary</h4>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="p-5 border-4 border-black rounded-2xl text-center" style="background:var(--fin-blue-soft)">
+                  <div class="font-black text-2xl" id="pf-wallet">₹55,000</div>
+                  <div class="text-xs font-black opacity-50 mt-1">Wallet</div>
+                </div>
+                <div class="p-5 border-4 border-black rounded-2xl text-center" style="background:var(--fin-pink)">
+                  <div class="font-black text-2xl" id="pf-spend">₹0</div>
+                  <div class="text-xs font-black opacity-50 mt-1">Spent</div>
+                </div>
+                <div class="p-5 border-4 border-black rounded-2xl text-center" style="background:var(--fin-green)">
+                  <div class="font-black text-2xl" id="pf-savings">0</div>
+                  <div class="text-xs font-black opacity-50 mt-1">Goals</div>
+                </div>
+              </div>
+            </div>
+            <div class="zee-card p-8">
+              <h4 class="font-black italic uppercase text-sm mb-5">Security</h4>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center p-4 border-4 border-black rounded-2xl"><span
+                    class="font-black text-sm">Email Verified</span><span
+                    class="bg-green-500 text-white text-xs font-black px-3 py-1 rounded-full">✓ Verified</span></div>
+                <div class="flex justify-between items-center p-4 border-4 border-black rounded-2xl"><span
+                    class="font-black text-sm">Password Reset</span><button
+                    class="brutal-btn brutal-btn-outline py-2 px-4 text-xs"
+                    onclick="openModal('modal-profile-reset'); resetProfileResetUI();">Change via OTP</button></div>
+                <div class="flex justify-between items-center p-4 border-4 border-black rounded-2xl"><span
+                    class="font-black text-sm">Account Type</span><span
+                    class="bg-black text-white text-xs font-black px-3 py-1 rounded-full">Student</span></div>
+              </div>
+            </div>
+            <div class="zee-card p-8">
+              <h4 class="font-black italic uppercase text-sm mb-5">Achievements 🏆</h4>
+              <div class="flex flex-wrap gap-3">
+                <div class="px-4 py-2 border-4 border-black rounded-2xl font-black text-sm"
+                  style="background:var(--fin-yellow)">🥇 First Trade</div>
+                <div class="px-4 py-2 border-4 border-black rounded-2xl font-black text-sm"
+                  style="background:var(--fin-green)">🎯 Goal Setter</div>
+                <div class="px-4 py-2 border-4 border-black rounded-2xl font-black text-sm"
+                  style="background:var(--fin-purple)">📈 Bull Beginner</div>
+                <div class="px-4 py-2 border-4 border-black rounded-2xl font-black text-sm opacity-30 border-dashed">🔥
+                  7-Day Streak (Soon)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════ MODALS ═══════════ -->
+
+  <!-- Add Expense Modal -->
+  <div class="modal-overlay" id="modal-expense">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-black text-2xl italic uppercase">Log Spend ➕</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs" onclick="closeModal('modal-expense')">✕
+          Close</button>
+      </div>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Merchant /
+        Description</label>
+      <input id="me-title" type="text" placeholder="Zomato, Uber...">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Amount
+            (₹)</label><input id="me-amt" type="number" placeholder="0.00" style="margin-bottom:0"></div>
+        <div><label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Date</label><input
+            id="me-date" type="date" style="margin-bottom:0"></div>
+      </div>
+      <div style="height:12px"></div>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Category</label>
+      <select id="me-cat">
+        <option value="Food">🍔 Food & Drinks</option>
+        <option value="Travel">🚕 Transport</option>
+        <option value="Study">📚 Academic</option>
+
+        <option value="Health">💊 Health</option>
+        <option value="Shopping">🛍️ Shopping</option>
+      </select>
+      <div class="flex gap-3 mt-2">
+        <button class="brutal-btn brutal-btn-outline flex-1 py-3 text-sm"
+          onclick="closeModal('modal-expense')">Cancel</button>
+        <button class="brutal-btn brutal-btn-blue py-3 text-sm" style="flex:2" onclick="addExpenseFromModal()">Record
+          Transaction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Savings Goal -->
+  <div class="modal-overlay" id="modal-goal">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-black text-2xl italic uppercase">New Vault Goal 🎯</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs" onclick="closeModal('modal-goal')">✕</button>
+      </div>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Goal Name</label>
+      <input id="g-name" type="text" placeholder="Europe Trip, New Laptop...">
+      <div class="flex flex-wrap gap-3 mb-5" id="icon-picker">
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl selected-icon-opt"
+          onclick="pickIcon(this,'✈️')">✈️</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'🏠')">🏠</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'🚗')">🚗</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'📚')">📚</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'💻')">💻</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'🎓')">🎓</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'🆘')">🆘</span>
+        <span class="text-2xl cursor-pointer p-2 border-4 border-black rounded-xl"
+          onclick="pickIcon(this,'💍')">💍</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Target Amount
+            (₹)</label><input id="g-target" type="number" placeholder="50000" style="margin-bottom:0"></div>
+        <div><label
+            class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Deadline</label><input
+            id="g-deadline" type="date" style="margin-bottom:0"></div>
+      </div>
+      <div class="flex gap-3 mt-5">
+        <button class="brutal-btn brutal-btn-outline flex-1 py-3 text-sm"
+          onclick="closeModal('modal-goal')">Cancel</button>
+        <button class="brutal-btn brutal-btn-blue py-3 text-sm" style="flex:2" onclick="addGoal()"><i
+            class="fa-solid fa-flag"></i> Create Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save to Goal Modal -->
+  <div class="modal-overlay" id="modal-save-goal">
+    <div class="modal-box" style="max-width:400px">
+      <div class="flex justify-between items-center mb-5">
+        <h3 class="font-black text-xl italic uppercase" id="saveto-name">Add Money</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs"
+          onclick="closeModal('modal-save-goal')">✕</button>
+      </div>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Amount to Add (₹)</label>
+      <input id="saveto-amt" type="number" placeholder="500">
+      <div class="flex gap-3">
+        <button class="brutal-btn brutal-btn-outline flex-1 py-3 text-sm"
+          onclick="closeModal('modal-save-goal')">Cancel</button>
+        <button class="brutal-btn brutal-btn-blue py-3 text-sm" style="flex:2" onclick="doSaveToGoal()"><i
+            class="fa-solid fa-piggy-bank"></i> Add Money</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trade Modal -->
+  <div class="modal-overlay" id="modal-trade">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-5">
+        <h3 class="font-black text-2xl italic uppercase">Quick Order 🚀</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs" onclick="closeModal('modal-trade')">✕</button>
+      </div>
+      <!-- Paper Cash Display (Yellow Card) -->
+      <div class="p-4 border-4 border-black rounded-2xl mb-4 flex justify-between items-center"
+        style="background:var(--fin-yellow)">
+        <div>
+          <div class="text-xs font-black opacity-50 uppercase">Virtual Trading Cash</div>
+          <div class="text-2xl font-black" id="trade-cash-disp">₹1,00,000</div>
+        </div>
+        <div class="text-right">
+          <div id="trade-strategy-label" class="text-[10px] font-black italic tracking-widest text-blue-600 mb-1">
+            STRATEGY: LONG 📈</div>
+          <div id="trade-status-badge" class="font-black text-[10px] text-green-600 uppercase tracking-tighter">MARKET
+            OPEN</div>
+        </div>
+      </div>
+
+      <!-- Order Controls -->
+      <div class="space-y-4">
+        <!-- Row 1: Order Type & Action -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="block text-xs font-black uppercase tracking-widest ml-3 opacity-60">Order Type</label>
+            <div class="flex gap-2">
+              <button id="btn-market" class="brutal-btn brutal-btn-blue px-2 py-2 text-[10px] flex-1"
+                onclick="setOrderType('MARKET')">MARKET</button>
+              <button id="btn-limit" class="brutal-btn brutal-btn-outline px-2 py-2 text-[10px] flex-1"
+                onclick="setOrderType('LIMIT')">LIMIT</button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="block text-xs font-black uppercase tracking-widest ml-3 opacity-60">Pick Action</label>
+            <div class="flex gap-2">
+              <button id="btn-buy-t" class="brutal-btn brutal-btn-green py-4 text-xs font-black flex-1"
+                onclick="setTradeType('BUY')">BUY</button>
+              <button id="btn-sell-t" class="brutal-btn brutal-btn-outline py-4 text-xs font-black flex-1"
+                onclick="setTradeType('SELL')">SELL</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Stock Selection -->
+        <div>
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Stock</label>
+          <select id="trade-sym" onchange="updateTradePrice()" class="w-full">
+            <option value="">Select Stock</option>
+          </select>
+        </div>
+
+        <!-- Row 3: Target Price (Limit only) -->
+        <div id="limit-price-row" class="hidden p-4 border-4 border-black rounded-2xl bg-yellow-100">
+          <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1">Target Price (₹)</label>
+          <input id="trade-target-price" type="number" step="0.05" placeholder="Enter target price" class="mb-0"
+            oninput="syncTradeAmt()">
+          <p class="text-[10px] font-bold opacity-60 mt-2 italic">Scheduled execution at this price.</p>
+        </div>
+
+        <!-- Row 4: Amount & Qty -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Buy for (₹)</label>
+            <input id="trade-amt" type="number" min="1" placeholder="₹ Amount" class="mb-0" oninput="syncTradeQty()">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Quantity</label>
+            <input id="trade-qty" type="number" min="1" placeholder="Shares" class="mb-0" oninput="syncTradeAmt()">
+          </div>
+        </div>
+
+        <!-- Summary & Confirm -->
+        <div class="p-4 border-4 border-black rounded-2xl font-black text-sm" style="background:var(--bg-cream)">
+          <div class="flex justify-between mb-1"><span class="opacity-50">Estimated Total</span><span
+              id="trade-est-total">₹0</span></div>
+          <div class="flex justify-between"><span class="opacity-50">Remaining Cash</span><span id="trade-remaining"
+              class="tick-up">₹1,00,000</span></div>
+        </div>
+
+        <button id="confirm-trade" class="brutal-btn brutal-btn-green w-full py-4 text-sm mt-2"
+          onclick="executeTrade()">
+          <i class="fa-solid fa-bolt"></i> Confirm BUY
+        </button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Profile Password Reset Modal -->
+  <div class="modal-overlay" id="modal-profile-reset">
+    <div class="modal-box" style="max-width:400px">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-black text-xl italic uppercase">Reset Password 🔐</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs"
+          onclick="closeModal('modal-profile-reset')">✕</button>
+      </div>
+
+      <!-- Step 1: Confirm -->
+      <div id="p-fp-s1" class="text-center">
+        <p class="text-sm font-bold opacity-70 mb-6">We will send a reset OTP to your registered email.</p>
+        <button class="brutal-btn brutal-btn-blue w-full py-4 text-sm" onclick="startProfileReset()">Send OTP <i
+            class="fa-solid fa-paper-plane"></i></button>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div id="p-fp-s2" class="hidden text-center">
+        <p class="text-xs font-bold opacity-60 mb-4">Enter the 6-digit code sent to your email</p>
+        <div class="otp-grid mb-6">
+          <input type="text" class="p-otp-single otp-single font-black text-2xl" maxlength="1"
+            onkeyup="otpNavProfile(this,0)">
+          <input type="text" class="p-otp-single otp-single font-black text-2xl" maxlength="1"
+            onkeyup="otpNavProfile(this,1)">
+          <input type="text" class="p-otp-single otp-single font-black text-2xl" maxlength="1"
+            onkeyup="otpNavProfile(this,2)">
+          <input type="text" class="p-otp-single otp-single font-black text-2xl" maxlength="1"
+            onkeyup="otpNavProfile(this,3)">
+          <input type="text" class="p-otp-single otp-single font-black text-2xl" maxlength="1"
+            onkeyup="otpNavProfile(this,4)">
+          <input type="text" class="p-otp-single otp-single font-black text-2xl" maxlength="1"
+            onkeyup="otpNavProfile(this,5)">
+        </div>
+        <button class="brutal-btn brutal-btn-blue w-full py-4 text-sm" onclick="verifyProfileOTP()">Verify OTP <i
+            class="fa-solid fa-check"></i></button>
+      </div>
+
+      <!-- Step 3: New Pass -->
+      <div id="p-fp-s3" class="hidden">
+        <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">New Password</label>
+        <input id="p-np" type="password" placeholder="Min 8 characters">
+        <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Confirm
+          Password</label>
+        <input id="p-cp" type="password" placeholder="Re-enter password">
+        <button class="brutal-btn brutal-btn-blue w-full py-4 text-sm mt-2" onclick="doProfileReset()">Update Password
+          <i class="fa-solid fa-save"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="modal-edit-profile">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-5">
+        <h3 class="font-black text-xl italic uppercase">Edit Profile ✏️</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs"
+          onclick="closeModal('modal-edit-profile')">✕</button>
+      </div>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Full Name</label>
+      <input id="ep-name" type="text">
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Student ID</label>
+      <input id="ep-sid" type="text">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Course</label>
+          <select id="ep-course">
+            <option>B.Tech – CS</option>
+            <option>B.Tech – IT</option>
+            <option>B.Tech – ECE</option>
+            <option>BCA</option>
+            <option>MCA</option>
+            <option>MBA</option>
+            <option>B.Com</option>
+            <option>BSc</option>
+          </select>
+        </div>
+        <div><label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Year</label>
+          <select id="ep-year">
+            <option>1st Year</option>
+            <option>2nd Year</option>
+            <option>3rd Year</option>
+            <option>4th Year</option>
+            <option>PG</option>
+          </select>
+        </div>
+      </div>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Monthly Budget
+        (₹)</label>
+      <input id="ep-budget" type="number" placeholder="55000">
+      <button class="brutal-btn brutal-btn-blue w-full py-4 text-sm" onclick="saveEditProfile()"><i
+          class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Market Education Modal -->
+  <div class="modal-overlay" id="modal-trade-edu">
+    <div class="modal-box" style="max-width:450px">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-black text-xl italic uppercase">Trade Summary 📊</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs"
+          onclick="closeModal('modal-trade-edu')">✕</button>
+      </div>
+      <div id="trade-edu-content" class="space-y-4">
+        <!-- Dynamic content here -->
+      </div>
+      <button class="brutal-btn brutal-btn-blue w-full py-4 text-sm mt-6" onclick="closeModal('modal-trade-edu')">Got
+        it! Continue Learning 🚀</button>
+    </div>
+  </div>
+
+  <!-- Top-up Wallet Modal -->
+  <div class="modal-overlay" id="modal-topup">
+    <div class="modal-box" style="max-width:400px">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-black text-xl italic uppercase">Top-up Wallet 💰</h3>
+        <button class="brutal-btn brutal-btn-outline px-4 py-2 text-xs" onclick="closeModal('modal-topup')">✕</button>
+      </div>
+      <p class="text-xs font-bold opacity-60 mb-4 text-center">Add money to your real wallet by increasing your monthly
+        budget.</p>
+      <label class="block text-xs font-black uppercase tracking-widest ml-3 mb-1 opacity-60">Amount to Add (₹)</label>
+      <input id="topup-amt" type="number" placeholder="5000">
+      <button class="brutal-btn brutal-btn-green w-full py-4 text-sm mt-2" onclick="doTopup()">Add Cash <i
+          class="fa-solid fa-coins"></i></button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <style>
+    .selected-icon-opt {
+      background: var(--fin-yellow);
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .border-3 {
+      border-width: 3px;
+      border-style: solid;
+    }
+  </style>
+
+  <script>
+    const API = 'http://127.0.0.1:5000/api';
+    // ════════════════════════════════════════
+    // GLOBAL STATE
+    // ════════════════════════════════════════
+    const ST = {
+      user: { name: '', email: '', sid: '', course: '', year: '', budget: 55000 },
+      wallet: 55000,
+      totalSpend: 0,
+      paperCash: 100000,
+      transactions: [],
+      savings: [],
+      holdings: [],
+      journal: [],
+      tradeType: 'BUY',
+      activeGoalId: null,
+      pickedIcon: '✈️',
+      charts: {},
+      dnaData: [0, 0, 0, 0],
+      tradeDone: 0,
+      activePriceChart: 'RELIANCE',
+      orderType: 'MARKET',
+      pendingOrders: []
+    };
+
+    // Market data
+    const MKT_BASE = {
+      RELIANCE: { name: 'Reliance Industries', price: 2456.75, vol: '2.5M' },
+      TCS: { name: 'Tata Consultancy Svcs', price: 3769.50, vol: '1.8M' },
+      HDFCBANK: { name: 'HDFC Bank Ltd', price: 1634.20, vol: '3.2M' },
+      INFY: { name: 'Infosys Ltd', price: 1542.85, vol: '2.9M' },
+      ITC: { name: 'ITC Limited', price: 408.30, vol: '4.5M' },
+      WIPRO: { name: 'Wipro Limited', price: 462.10, vol: '1.2M' },
+      ONGC: { name: 'Oil & Natural Gas', price: 287.45, vol: '3.8M' },
+      SBIN: { name: 'State Bank of India', price: 812.55, vol: '5.2M' },
+      BAJFINANCE: { name: 'Bajaj Finance', price: 7124.30, vol: '0.9M' },
+      ZOMATO: { name: 'Zomato Ltd', price: 214.60, vol: '6.1M' }
+    };
+    const market = {};
+    Object.keys(MKT_BASE).forEach(sym => {
+      market[sym] = { ...MKT_BASE[sym], change: 0, pct: 0, history: [] };
+      for (let i = 0; i < 40; i++) market[sym].history.push(+(MKT_BASE[sym].price * (0.96 + Math.random() * .08)).toFixed(2));
+    });
+
+    // ════════════════════════════════════════
+    // AUTH HELPERS
+    // ════════════════════════════════════════
+    const isBV = email => email.trim().toLowerCase().endsWith('@banasthali.in');
+
+    function clearFieldErr(inpId, errId) {
+      document.getElementById(inpId)?.classList.remove('err');
+      const e = document.getElementById(errId);
+      if (e) e.classList.remove('show');
+    }
+
+    function showFieldErr(inpId, errId) {
+      document.getElementById(inpId)?.classList.add('err');
+      const e = document.getElementById(errId);
+      if (e) e.classList.add('show');
+    }
+
+    // ── INTRO ──
+    function goIntro() {
+      hide('authPage'); show('introPage');
+    }
+
+    function showAuth(tab) {
+      hide('introPage');
+      show('authPage');
+      switchAuthTab(tab);
+    }
+
+    function switchAuthTab(tab) {
+      hide('login-panel'); hide('register-panel'); hide('forgot-panel');
+      document.getElementById('tab-login').classList.remove('nav-active');
+      document.getElementById('tab-register').classList.remove('nav-active');
+      if (tab === 'login') { show('login-panel'); document.getElementById('tab-login').classList.add('nav-active'); }
+      else if (tab === 'register') { show('register-panel'); document.getElementById('tab-register').classList.add('nav-active'); }
+      else { show('forgot-panel'); }
+    }
+
+    // ── LOGIN ──
+    async function doLogin() {
+      const email = document.getElementById('li-email').value.trim();
+      const pass = document.getElementById('li-pass').value.trim();
+      if (!email || !pass) { showToast('⚠️ Please fill email and password'); return; }
+      if (!isBV(email)) { showFieldErr('li-email', 'li-email-err'); return; }
+
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast('❌ ' + data.error); return; }
+
+      showToast('📧 OTP sent to your email!');
+      hide('login-s1'); show('login-s2');
+      ST.attemptLoginEmail = email;
+    }
+
+    async function verifyLoginOTP() {
+      const otps = document.querySelectorAll('#login-s2 .otp-single');
+      const otp = [...otps].map(i => i.value).join('');
+      if (otp.length < 6) { showToast('⚠️ Enter all 6 digits'); return; }
+
+      const res = await fetch(`${API}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: ST.attemptLoginEmail, otp })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast('❌ Invalid OTP / ' + data.error);
+        otps.forEach(i => i.value = '');
+        if (otps[0]) otps[0].focus();
+        return;
+      }
+
+      sessionStorage.setItem('fy_token', data.token);
+      ST.user = { ...ST.user, ...data.user };
+      ST.wallet = ST.user.budget || 55000;
+      ST.paperCash = (ST.user.paper_cash !== undefined) ? ST.user.paper_cash : 100000;
+      sessionStorage.setItem('fy_user', JSON.stringify(ST.user));
+      doWelcome();
+    }
+
+    // ── REGISTER ──
+    async function sendRegOTP() {
+      const name = document.getElementById('r-name').value.trim();
+      const email = document.getElementById('r-email').value.trim();
+      const sid = document.getElementById('r-sid').value.trim();
+      const course = document.getElementById('r-course').value;
+      const year = document.getElementById('r-year').value;
+      const budgetVal = document.getElementById('r-budget').value;
+      const budget = budgetVal ? parseFloat(budgetVal) : 55000;
+      const pass = document.getElementById('r-pass').value;
+
+      if (!name || !email || !sid || !course || !year || !pass) {
+        showToast('⚠️ Fill all fields'); return;
+      }
+      if (!isBV(email)) {
+        showFieldErr('r-email', 'r-email-err'); return;
+      }
+
+      const res = await fetch(`${API}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, student_id: sid, course, year, budget, password: pass })
+      });
+      const data = await res.json();
+
+      if (!res.ok) { showToast('❌ ' + data.error); return; }
+
+      showToast('📧 OTP sent to your email!');
+      hide('reg-s1'); show('reg-s2');
+      ST.tempUser = { name, email, sid, course, year, budget: budget };
+    }
+
+    async function verifyRegOTP() {
+      const otps = document.querySelectorAll('#reg-s2 .otp-single');
+      const otp = [...otps].map(i => i.value).join('');
+      if (otp.length < 6) { showToast('⚠️ Enter all 6 digits'); return; }
+
+      const res = await fetch(`${API}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: ST.tempUser.email, otp })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast('❌ Galat OTP enter hua hai / ' + data.error);
+        otps.forEach(i => i.value = '');
+        if (otps[0]) otps[0].focus();
+        return;
+      }
+
+      sessionStorage.setItem('fy_token', data.token);
+      ST.user = { ...ST.tempUser, ...data.user };
+      ST.wallet = ST.user.budget || 55000;
+      ST.paperCash = (ST.user.paper_cash !== undefined) ? ST.user.paper_cash : 100000;
+      sessionStorage.setItem('fy_user', JSON.stringify(ST.user));
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      doWelcome();
+    }
+
+    // ── FORGOT ──
+    function showForgot() { switchAuthTab('forgot'); }
+
+    async function sendFPOTP() {
+      const email = document.getElementById('fp-email').value.trim();
+      if (!isBV(email)) { showToast('⚠️ Only @banasthali.in emails are allowed'); return; }
+
+      const res = await fetch(`${API}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast('❌ ' + data.error); return; }
+
+      showToast('📧 Reset OTP sent to ' + email);
+      hide('fp-s1'); show('fp-s2');
+    }
+
+    function showFPS3() {
+      const otps = document.querySelectorAll('#fp-s2 .otp-single');
+      const otp = [...otps].map(i => i.value).join('');
+      if (otp.length < 6) { showToast('⚠️ Enter all 6 digits'); return; }
+      hide('fp-s2'); show('fp-s3');
+    }
+
+    async function doResetPassword() {
+      const email = document.getElementById('fp-email').value.trim();
+      const otps = document.querySelectorAll('#fp-s2 .otp-single');
+      const otp = [...otps].map(i => i.value).join('');
+      const np = document.getElementById('fp-np').value;
+      const cp = document.getElementById('fp-cp').value;
+
+      if (!np || !cp) { showToast('⚠️ Enter new password'); return; }
+      if (np !== cp) { showToast('⚠️ Passwords do not match'); return; }
+
+      const res = await fetch(`${API}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp, new_password: np })
+      });
+      const data = await res.json();
+
+      if (!res.ok) { showToast('❌ ' + data.error); return; }
+      showToast('✅ Password updated successfully!');
+      setTimeout(() => switchAuthTab('login'), 1500);
+    }
+
+    function otpNav(inp, idx, group) {
+      const sel = group === 'reg' ? '#reg-s2 .otp-single' : (group === 'login' ? '#login-s2 .otp-single' : '#fp-s2 .otp-single');
+      const all = document.querySelectorAll(sel);
+      if (inp.value && idx < all.length - 1) all[idx + 1].focus();
+    }
+
+    // ── WELCOME ──
+    function doWelcome() {
+      hide('authPage');
+      show('welcomePage');
+      document.getElementById('welcome-name').textContent = ST.user.name.split(' ')[0] || 'User';
+      document.getElementById('welcome-sub').textContent = `Student ID: ${ST.user.sid || '–'} · ${ST.user.course || '–'} · ${ST.user.year || '–'}`;
+      // Show actual remaining amount instead of fixed 1,00,000
+      const welcomePara = document.querySelector('#welcomePage p.text-xl');
+      if (welcomePara) {
+        welcomePara.innerHTML = `Your paper wallet is loaded with <span class="text-green-600 text-2xl font-black">₹${fmt(ST.paperCash)}</span>. Ready to beat the market?`;
+      }
+    }
+
+    function enterApp() {
+      hide('welcomePage');
+      show('mainApp');
+      initApp();
+    }
+
+    function doLogout() {
+      hide('mainApp');
+      show('introPage');
+      sessionStorage.removeItem('fy_token');
+      sessionStorage.removeItem('fy_user');
+      // Reset State
+      ST.transactions = []; ST.savings = []; ST.holdings = []; ST.journal = [];
+      ST.paperCash = 100000; ST.totalSpend = 0; ST.user = { name: '', email: '', sid: '', course: '', year: '', budget: 55000 };
+      ST.wallet = 55000; ST.dnaData = [0, 0, 0, 0]; ST.tradeDone = 0;
+
+      // Clear all Auth Inputs for security
+      document.querySelectorAll('input').forEach(i => {
+        if (i.type !== 'button' && i.type !== 'submit') i.value = '';
+      });
+      // Reset Auth Panels to Step 1
+      show('login-s1'); hide('login-s2');
+      show('reg-s1'); hide('reg-s2');
+      show('fp-s1'); hide('fp-s2'); hide('fp-s3');
+      // Reset Tabs
+      switchAuthTab('login');
+    }
+
+    async function loadUserData() {
+      const token = sessionStorage.getItem('fy_token');
+      if (!token) return;
+      const hdrs = { 'Authorization': 'Bearer ' + token };
+      try {
+        const exRes = await fetch(`${API}/expenses`, { headers: hdrs });
+        if (exRes.status === 401) return doLogout();
+        if (exRes.ok) {
+          const exData = await exRes.json();
+          ST.transactions = (exData.expenses || []).map(t => ({ ...t, amount: parseFloat(t.amount) || 0 }));
+          ST.totalSpend = ST.transactions.reduce((s, t) => s + t.amount, 0);
+          ST.wallet = (parseFloat(ST.user.budget) || 55000) - ST.totalSpend;
+          const cMap = { Food: 0, Travel: 1, Study: 2, Health: 3 };
+          ST.dnaData = [0, 0, 0, 0];
+          ST.transactions.forEach(t => { if (cMap[t.category] !== undefined) ST.dnaData[cMap[t.category]] += (t.amount || 0); });
+        }
+        const svRes = await fetch(`${API}/savings`, { headers: hdrs });
+        if (svRes.ok) {
+          const svData = await svRes.json();
+          ST.savings = (svData.goals || []).map(g => ({
+            id: g.goal_id, name: g.name, target: g.target_amount, current: g.current_amount,
+            deadline: g.deadline, icon: g.icon, done: g.is_done
+          }));
+        }
+        await fetchPortfolio(hdrs);
+      } catch (e) {
+        console.error('Data load error', e);
+      }
+    }
+
+    async function fetchPortfolio(hdrs) {
+      if (!hdrs) hdrs = { 'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token') };
+      const pfRes = await fetch(`${API}/trading/portfolio`, { headers: hdrs });
+      if (pfRes.ok) {
+        const pfData = await pfRes.json();
+        ST.holdings = pfData.holdings.map(h => ({
+          sym: h.symbol, name: market[h.symbol]?.name || h.symbol, qty: h.quantity, avg: h.avg_price
+        }));
+        ST.paperCash = pfData.paper_cash;
+      }
+    }
+
+    async function checkDailyReset() {
+      try {
+        const hdrs = { 'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token') };
+        const res = await fetch(`${API}/trading/reset-balance`, { method: 'POST', headers: hdrs });
+        if (res.ok) {
+          const data = await res.json();
+          ST.paperCash = data.paper_cash;
+          if (data.reset) {
+            showToast('🔄 New day! Virtual trading balance reset to ₹1,00,000');
+          }
+          updateUI();
+        }
+      } catch (e) { console.log('Reset check error', e); }
+    }
+
+    // ════════════════════════════════════════
+    // APP INIT
+    // ════════════════════════════════════════
+    async function initApp() {
+      document.getElementById('nav-user-name').textContent = ST.user.name.split(' ')[0] || 'User';
+      document.getElementById('dash-date-str').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' · Status: Active';
+      initTradeSel();
+      buildAllCharts();
+      startMarketSim();
+      await loadUserData();
+      renderTicker();
+      loadProfileView();
+      updateUI();
+    }
+
+    // CHECK FOR EXISTING SESSION ON LOAD
+    window.addEventListener('load', async () => {
+      const token = sessionStorage.getItem('fy_token');
+      const userStr = sessionStorage.getItem('fy_user');
+      if (token && userStr) {
+        try {
+          ST.user = JSON.parse(userStr);
+          ST.wallet = ST.user.budget || 55000;
+          ST.paperCash = (ST.user.paper_cash !== undefined) ? ST.user.paper_cash : 100000;
+          ST.pendingOrders = JSON.parse(sessionStorage.getItem('fy_pending') || '[]');
+
+          hide('introPage');
+          hide('authPage');
+          show('mainApp');
+          await initApp();
+        } catch (e) {
+          console.error("Session restore failed", e);
+          doLogout();
+        }
+      }
+    });
+
+    // ════════════════════════════════════════
+    // NAVIGATION
+    // ════════════════════════════════════════
+    function showPage(id) {
+      document.querySelectorAll('.page-content').forEach(p => p.classList.remove('page-active'));
+      document.querySelectorAll('nav button[id^="btn-"]').forEach(b => b.classList.remove('nav-active'));
+      document.getElementById('page-' + id).classList.add('page-active');
+      const nb = document.getElementById('btn-' + id);
+      if (nb) nb.classList.add('nav-active');
+      if (id === 'trading') { checkDailyReset(); renderMarket(); }
+      if (id === 'savings') renderSavings();
+      if (id === 'profile') loadProfileView();
+      if (id === 'hub') buildRuleChart();
+      updateUI();
+    }
+
+    // ════════════════════════════════════════
+    // MARKET SIMULATION
+    // ════════════════════════════════════════
+    function isMarketOpen() {
+      const now = new Date();
+      const istStr = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+      const ist = new Date(istStr);
+      const day = ist.getDay();
+      if (day === 0 || day === 6) return false;
+      const t = ist.getHours() * 100 + ist.getMinutes();
+      return t >= 915 && t <= 1530;
+    }
+
+    function startMarketSim() {
+      setInterval(() => {
+        if (!isMarketOpen()) {
+          // Market status update if on trading page
+          const mktStatus = document.getElementById('market-status-msg');
+          if (mktStatus) {
+            mktStatus.innerHTML = '<span class="text-red-500 font-black">MARKET CLOSED</span> (9:15-15:30 IST Mon-Fri)';
+          }
+          // Also refresh Modal if open
+          if (document.getElementById('modal-trade').classList.contains('open')) calcTradeTotal();
+          return;
+        }
+
+        const mktStatus = document.getElementById('market-status-msg');
+        if (mktStatus) {
+          mktStatus.innerHTML = '<span class="text-green-500 font-black">MARKET OPEN</span> · Simulated Live NSE/BSE';
+        }
+        // Also refresh Modal if open (to switch back to OPEN state)
+        if (document.getElementById('modal-trade').classList.contains('open')) calcTradeTotal();
+
+        Object.keys(market).forEach(sym => {
+          const m = market[sym];
+          const delta = (Math.random() - .495) * m.price * .009;
+          m.price = Math.max(5, +(m.price + delta).toFixed(2));
+          m.change = +(m.price - MKT_BASE[sym].price).toFixed(2);
+          m.pct = +((m.change / MKT_BASE[sym].price) * 100).toFixed(2);
+          m.history.push(m.price);
+          if (m.history.length > 50) m.history.shift();
+
+          // Check Pending Orders (Limit & Scheduled Market)
+          ST.pendingOrders = ST.pendingOrders.filter(ord => {
+            if (ord.symbol === sym) {
+              // 1. Scheduled Market Order (No target price) -> Execute at opening/current price
+              if (!ord.targetPrice) {
+                executeOrder(ord.symbol, ord.qty, m.price, ord.type, true);
+                return false;
+              }
+              // 2. Limit orders
+              if (ord.type === 'BUY' && m.price <= ord.targetPrice) {
+                executeOrder(ord.symbol, ord.qty, m.price, 'BUY', true);
+                return false;
+              }
+              if (ord.type === 'SELL' && m.price >= ord.targetPrice) {
+                executeOrder(ord.symbol, ord.qty, m.price, 'SELL', true);
+                return false;
+              }
+            }
+            return true;
+          });
+          sessionStorage.setItem('fy_pending', JSON.stringify(ST.pendingOrders));
+        });
+        renderTicker();
+        if (document.getElementById('page-trading').classList.contains('page-active')) renderMarket();
+        updatePortfolioValue();
+        updatePriceChart();
+      }, 2200);
+    }
+
+    function renderTicker() {
+      const items = Object.keys(market).map(sym => {
+        const m = market[sym]; const up = m.pct >= 0;
+        return `<span class="font-black text-sm whitespace-nowrap"><span class="opacity-60">${sym}</span> ₹${m.price.toFixed(2)} <span class="${up ? 'text-green-400' : 'text-red-400'}">${up ? '▲' : '▼'}${Math.abs(m.pct).toFixed(2)}%</span></span>`;
+      }).join(' &nbsp;·&nbsp; ');
+      const t = document.getElementById('ticker-inner');
+      if (t) t.innerHTML = items + ' &nbsp;&nbsp;&nbsp; ' + items;
+    }
+
+    function renderMarket() {
+      const q = (document.getElementById('mkt-search')?.value || '').toUpperCase();
+      const syms = Object.keys(market).filter(s => s.includes(q) || market[s].name.toUpperCase().includes(q));
+      document.getElementById('market-list').innerHTML = syms.map(sym => {
+        const m = market[sym]; const up = m.pct >= 0;
+        return `<div class="flex items-center justify-between px-6 py-4 hover:bg-yellow-50 transition-colors">
+      <div><div class="font-black text-sm">${sym}</div><div class="text-xs font-bold opacity-40">${m.name}</div></div>
+      <div class="font-black text-sm">₹${m.price.toFixed(2)}</div>
+      <div class="font-black text-xs px-3 py-1 rounded-xl ${up ? 'tick-up bg-green-50' : 'tick-down bg-red-50'}">${up ? '▲' : '▼'}${Math.abs(m.pct).toFixed(2)}%</div>
+      <div class="text-xs font-bold opacity-40">${m.vol}</div>
+      <div class="flex gap-2">
+        <button class="brutal-btn brutal-btn-green text-xs px-3 py-1.5" onclick="quickOrder('${sym}','BUY')">BUY</button>
+        <button class="brutal-btn brutal-btn-red text-xs px-3 py-1.5" onclick="quickOrder('${sym}','SELL')">SELL</button>
+      </div>
+    </div>`;
+      }).join('');
+    }
+
+    function quickOrder(sym, type) {
+      openModal('modal-trade');
+      document.getElementById('trade-sym').value = sym;
+      setTradeType(type);
+      updateTradePrice();
+    }
+
+    // ════════════════════════════════════════
+    // TRADING
+    // ════════════════════════════════════════
+    function initTradeSel() {
+      const sel = document.getElementById('trade-sym');
+      Object.keys(market).forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = `${s} – ${market[s].name}`; sel.appendChild(o); });
+    }
+
+    function setOrderType(type) {
+      ST.orderType = type;
+      document.getElementById('btn-market').className = type === 'MARKET' ? 'brutal-btn brutal-btn-blue px-4 py-2 text-[10px] flex-1' : 'brutal-btn brutal-btn-outline px-4 py-2 text-[10px] flex-1';
+      document.getElementById('btn-limit').className = type === 'LIMIT' ? 'brutal-btn brutal-btn-blue px-4 py-2 text-[10px] flex-1' : 'brutal-btn brutal-btn-outline px-4 py-2 text-[10px] flex-1';
+      const row = document.getElementById('limit-price-row');
+      if (type === 'LIMIT') { row.classList.remove('hidden'); } else { row.classList.add('hidden'); }
+      syncTradeQty();
+    }
+
+    function setTradeType(t) {
+      ST.tradeType = t;
+      document.getElementById('btn-buy-t').className = t === 'BUY' ? 'brutal-btn brutal-btn-green py-4 text-xs font-black flex-1' : 'brutal-btn brutal-btn-outline py-4 text-xs font-black flex-1';
+      document.getElementById('btn-sell-t').className = t === 'SELL' ? 'brutal-btn brutal-btn-red py-4 text-xs font-black flex-1' : 'brutal-btn brutal-btn-outline py-4 text-xs font-black flex-1';
+      document.getElementById('confirm-trade').textContent = `⚡ Confirm ${t}`;
+      document.getElementById('confirm-trade').className = `brutal-btn ${t === 'BUY' ? 'brutal-btn-green' : 'brutal-btn-red'} w-full py-4 text-sm mt-2`;
+
+      const strat = document.getElementById('trade-strategy-label');
+      if (strat) {
+        strat.textContent = t === 'BUY' ? 'STRATEGY: LONG 📈' : 'STRATEGY: SHORT 📉';
+        strat.className = 'text-[10px] font-black italic tracking-widest mb-1 ' + (t === 'BUY' ? 'text-blue-600' : 'text-orange-600');
+      }
+      calcTradeTotal();
+    }
+
+    function syncTradeQty() {
+      const sym = document.getElementById('trade-sym').value;
+      const amt = parseFloat(document.getElementById('trade-amt').value) || 0;
+      if (!sym || !amt) { document.getElementById('trade-qty').value = ''; calcTradeTotal(); return; }
+      const price = ST.orderType === 'LIMIT' ? (parseFloat(document.getElementById('trade-target-price').value) || 0) : market[sym].price;
+      if (price <= 0) return;
+      document.getElementById('trade-qty').value = Math.floor(amt / price);
+      calcTradeTotal();
+    }
+
+    function syncTradeAmt() {
+      const sym = document.getElementById('trade-sym').value;
+      const qty = parseInt(document.getElementById('trade-qty').value) || 0;
+      if (!sym || !qty) { document.getElementById('trade-amt').value = ''; calcTradeTotal(); return; }
+      const price = ST.orderType === 'LIMIT' ? (parseFloat(document.getElementById('trade-target-price').value) || 0) : market[sym].price;
+      if (price <= 0) return;
+      document.getElementById('trade-amt').value = (qty * price).toFixed(0);
+      calcTradeTotal();
+    }
+
+    function calcTradeTotal() {
+      const badge = document.getElementById('trade-status-badge');
+      const confirmBtn = document.getElementById('confirm-trade');
+      if (badge) {
+        if (isMarketOpen()) {
+          badge.textContent = 'MARKET OPEN';
+          badge.className = 'font-black text-[10px] text-green-600 uppercase tracking-tighter';
+          if (confirmBtn) confirmBtn.disabled = false;
+        } else {
+          badge.textContent = 'MARKET CLOSED';
+          badge.className = 'font-black text-[10px] text-red-500 uppercase tracking-tighter';
+          if (ST.orderType === 'MARKET' && confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.classList.add('opacity-30');
+            confirmBtn.textContent = 'MARKET IS CLOSED';
+          } else if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.classList.remove('opacity-30');
+            confirmBtn.textContent = `📅 Schedule ${ST.tradeType}`;
+          }
+        }
+      }
+
+      const sym = document.getElementById('trade-sym').value;
+      const qty = parseInt(document.getElementById('trade-qty').value) || 0;
+      if (!sym || !qty) {
+        document.getElementById('trade-est-total').textContent = '₹0';
+        document.getElementById('trade-remaining').textContent = '₹' + fmt(ST.paperCash);
+        return;
+      }
+      const p = ST.orderType === 'LIMIT' ? (parseFloat(document.getElementById('trade-target-price').value) || 0) : market[sym].price;
+      if (p <= 0) return;
+      const total = qty * p;
+      const rem = ST.paperCash - total;
+      document.getElementById('trade-est-total').textContent = '₹' + fmt(total);
+      const remEl = document.getElementById('trade-remaining');
+      remEl.textContent = '₹' + fmt(rem);
+      remEl.className = rem >= 0 ? 'tick-up' : 'tick-down';
+    }
+
+    async function executeTrade() {
+      const sym = document.getElementById('trade-sym').value;
+      const qty = parseInt(document.getElementById('trade-qty').value) || 0;
+      if (!sym || !qty || qty < 1) { showToast('⚠️ Pick a stock and valid quantity'); return; }
+
+      if (ST.orderType === 'LIMIT') {
+        const targetPrice = parseFloat(document.getElementById('trade-target-price').value);
+        if (!targetPrice || targetPrice <= 0) { showToast('⚠️ Set a valid target price'); return; }
+        ST.pendingOrders.push({ symbol: sym, qty, targetPrice, type: ST.tradeType });
+        showToast(`🎯 ${ST.tradeType} Order Scheduled @ ₹${targetPrice}`);
+        closeModal('modal-trade');
+        return;
+      }
+
+      const price = market[sym].price;
+      if (!isMarketOpen()) {
+        ST.pendingOrders.push({ symbol: sym, qty, targetPrice: null, type: ST.tradeType });
+        sessionStorage.setItem('fy_pending', JSON.stringify(ST.pendingOrders));
+        showToast(`📅 Market is closed. Your ${ST.tradeType} order for ${qty}×${sym} has been scheduled for tomorrow 9:15 AM!`);
+        closeModal('modal-trade');
+        return;
+      }
+
+      await executeOrder(sym, qty, price, ST.tradeType);
+    }
+
+    async function executeOrder(sym, qty, price, type, isAuto = false) {
+      const endpoint = type === 'BUY' ? 'buy' : 'sell';
+      const res = await fetch(`${API}/trading/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token')
+        },
+        body: JSON.stringify({ symbol: sym, quantity: qty, price: price })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Trade failed' }));
+        showToast('❌ ' + (err.error || 'Execution failed'));
+        return;
+      }
+      const data = await res.json();
+      ST.paperCash = data.paper_cash;
+      await fetchPortfolio();
+      updateUI();
+
+      if (isAuto) {
+        showToast(`✅ Auto-${type} filled: ${qty} ${sym} @ ₹${price}`);
+      } else {
+        showEducationModal(sym, qty, price, type);
+        closeModal('modal-trade');
+      }
+    }
+
+    function showEducationModal(sym, qty, buyPrice, type) {
+      const curPrice = market[sym].price;
+      const total = qty * buyPrice;
+      let html = `
+        <div class="p-5 border-4 border-black rounded-2xl bg-blue-50">
+          <p class="text-sm font-bold mb-2">🎓 <span class="bg-blue-600 text-white px-2">EDUCATION MODE</span></p>
+          <div class="text-sm space-y-3">
+            <p>You ${type === 'BUY' ? 'bought' : 'sold'} <span class="font-black">${qty}</span> shares of <span class="font-black">${sym}</span> at <span class="font-black">₹${buyPrice.toFixed(2)}</span>.</p>
+            <p>Total Investment: <span class="font-black">₹${total.toFixed(2)}</span></p>
+            <hr class="border-black border-dashed opacity-20">
+            <p class="font-black text-blue-800">Why did you do this?</p>
+            <p class="opacity-70">${type === 'BUY' ?
+          'Going LONG means you expect the price to GO UP. You make money if you sell it later at a higher price.' :
+          'Going SHORT means you expect the price to GO DOWN. You make money if the price drops.'}</p>
+          </div>
+        </div>
+        <div class="p-5 border-4 border-black rounded-2xl bg-green-50">
+          <p class="font-black text-sm mb-2">Live Market Status:</p>
+          <div class="flex justify-between items-center italic">
+            <span>Price: ₹${curPrice.toFixed(2)}</span>
+            <span>Diff: ${((curPrice - buyPrice)).toFixed(2)} / share</span>
+          </div>
+          <p class="text-xs mt-3 opacity-80">
+            ${curPrice >= buyPrice ?
+          '✅ <b>Currently in Profit:</b> Total value increased because the market price stayed above your entry price.' :
+          '⚠️ <b>Currently in Loss:</b> Market price dropped below your entry price. This happens when there is more selling pressure.'}
+          </p>
+        </div>
+      `;
+      document.getElementById('trade-edu-content').innerHTML = html;
+      openModal('modal-trade-edu');
+      if (type === 'BUY') confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+    }
+
+    function updatePortfolioValue() {
+      const val = ST.holdings.reduce((s, h) => (market[h.sym] ? s + h.qty * market[h.sym].price : s), 0);
+      const cost = ST.holdings.reduce((s, h) => s + h.qty * h.avg, 0);
+      const pnl = val - cost;
+      el('t-cash', '₹' + fmt(ST.paperCash));
+      el('t-port', '₹' + fmt(val));
+      const pnlEl = document.getElementById('t-pnl');
+      if (pnlEl) { pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmt(pnl); pnlEl.className = 'text-3xl font-black ' + (pnl >= 0 ? 'tick-up' : 'tick-down'); }
+      el('t-count', ST.tradeDone);
+      el('dash-holdings', '₹' + fmt(Math.round(val)));
+      renderHoldings();
+      updatePortfolioDonut();
+    }
+
+    function renderHoldings() {
+      const tbody = document.getElementById('holdings-body');
+      if (!tbody) return;
+      if (!ST.holdings.length) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 opacity-30 font-black text-xs">No holdings yet</td></tr>'; return; }
+      tbody.innerHTML = ST.holdings.map(h => {
+        const cur = market[h.sym]?.price || h.avg;
+        const pnl = (cur - h.avg) * h.qty;
+        return `<tr class="border-b-2 border-black/10">
+      <td class="py-3">${h.sym}</td>
+      <td class="py-3 text-center">${h.qty}</td>
+      <td class="py-3 text-center">₹${h.avg.toFixed(0)}</td>
+      <td class="py-3 text-right font-black ${pnl >= 0 ? 'tick-up' : 'tick-down'}">${pnl >= 0 ? '+' : ''} ₹${Math.round(pnl)}</td>
+    </tr>`;
+      }).join('');
+    }
+
+    // ════════════════════════════════════════
+    // EXPENSES
+    // ════════════════════════════════════════
+    async function handleNewExpense() {
+      const title = document.getElementById('exTitle').value.trim();
+      const amt = parseFloat(document.getElementById('exAmt').value);
+      const cat = document.getElementById('exCat').value;
+      const date = document.getElementById('exDate').value || new Date().toISOString().split('T')[0];
+      if (!title || !amt || amt <= 0) { showToast('⚠️ Enter title and valid amount'); return; }
+      const success = await addTx({ title, amt, cat, date });
+      if (success) {
+        document.getElementById('exTitle').value = '';
+        document.getElementById('exAmt').value = '';
+        showToast('✅ Expense recorded!');
+      }
+    }
+
+    async function addExpenseFromModal() {
+      const title = document.getElementById('me-title').value.trim();
+      const amt = parseFloat(document.getElementById('me-amt').value);
+      const cat = document.getElementById('me-cat').value;
+      const date = document.getElementById('me-date').value || new Date().toISOString().split('T')[0];
+      if (!title || !amt || amt <= 0) { showToast('⚠️ Enter title and valid amount'); return; }
+      const success = await addTx({ title, amt, cat, date });
+      if (success) {
+        closeModal('modal-expense');
+        document.getElementById('me-title').value = '';
+        document.getElementById('me-amt').value = '';
+        showToast('✅ Expense recorded!');
+      }
+    }
+
+    async function addTx(tx) {
+      const w = parseFloat(ST.wallet) || 0;
+      const a = parseFloat(tx.amt) || 0;
+      if (w - a < 0) {
+        showToast('😭 Insufficient balance in wallet! Please top-up first.');
+        return false;
+      }
+      const res = await fetch(`${API}/expenses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token') },
+        body: JSON.stringify({ title: tx.title, amount: tx.amt, category: tx.cat, date: tx.date })
+      });
+      if (!res.ok) { showToast('❌ Failed to save expense'); return false; }
+      const data = await res.json();
+      const newEx = data.expense;
+
+      ST.transactions.unshift({
+        id: newEx.expense_id, title: newEx.title, amount: newEx.amount, category: newEx.category, date: newEx.date
+      });
+      ST.totalSpend += newEx.amount;
+      ST.wallet = ST.user.budget - ST.totalSpend;
+      const catIdx = { Food: 0, Travel: 1, Study: 2, Health: 3 };
+      if (catIdx[newEx.category] !== undefined) ST.dnaData[catIdx[newEx.category]] += newEx.amount;
+      updateUI();
+      return true;
+    }
+
+    async function deleteExpense(id) {
+      const res = await fetch(`${API}/expenses/${id}`, {
+        method: 'DELETE', headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token') }
+      });
+      if (!res.ok) { showToast('❌ Failed to delete'); return; }
+
+      const tx = ST.transactions.find(t => t.id === id);
+      if (!tx) return;
+      ST.totalSpend -= (tx.amount || 0);
+      ST.wallet = ST.user.budget - ST.totalSpend;
+      const catIdx = { Food: 0, Travel: 1, Study: 2, Health: 3 };
+      if (catIdx[tx.category] !== undefined) ST.dnaData[catIdx[tx.category]] -= (tx.amount || 0);
+      ST.transactions = ST.transactions.filter(t => t.id !== id);
+      updateUI();
+      showToast('🗑️ Deleted');
+    }
+
+    const catEmoji = { Food: '🍔', Travel: '🚕', Study: '📚', Leisure: '🎬', Health: '💊', Shopping: '🛍️' };
+    const catColors = { Food: 'var(--fin-yellow)', Travel: 'var(--fin-blue-soft)', Study: 'var(--fin-purple)', Leisure: 'var(--fin-pink)', Health: 'var(--fin-green)', Shopping: '#FCA5A5' };
+
+    function renderExpenseHistory() {
+      const el2 = document.getElementById('full-history-list');
+      if (!el2) return;
+      if (!ST.transactions.length) { el2.innerHTML = '<p class="text-center font-black opacity-30 py-8">No transactions yet. Log your first spend!</p>'; return; }
+      el2.innerHTML = ST.transactions.map(t => `
+    <div class="zee-card p-5 flex items-center gap-4" style="box-shadow:6px 6px 0 #000;border-radius:1.5rem">
+      <div style="width:44px;height:44px;border:3px solid #000;border-radius:50%;background:${catColors[t.category] || '#eee'};display:flex;align-items:center;justify-center:center;font-size:20px;flex-shrink:0">${catEmoji[t.category] || '💸'}</div>
+      <div class="flex-1"><p class="font-black uppercase text-sm">${t.title}</p><p class="text-xs font-bold opacity-40 uppercase">${t.category} · ${t.date}</p></div>
+      <p class="text-xl font-black tick-down">-₹${fmt(t.amount || 0)}</p>
+      <button class="brutal-btn brutal-btn-outline text-xs px-3 py-1.5 text-red-500" onclick="deleteExpense(${t.id})">✕</button>
+    </div>`).join('');
+    }
+
+    // ════════════════════════════════════════
+    // SAVINGS
+    // ════════════════════════════════════════
+    let pickedGoalIcon = '✈️';
+    function pickIcon(el2, icon) {
+      document.querySelectorAll('#icon-picker span').forEach(e => e.classList.remove('selected-icon-opt'));
+      el2.classList.add('selected-icon-opt');
+      pickedGoalIcon = icon;
+    }
+
+    async function addGoal() {
+      const name = document.getElementById('g-name').value.trim();
+      const target = parseFloat(document.getElementById('g-target').value);
+      const deadline = document.getElementById('g-deadline').value;
+      if (!name || !target || !deadline) { showToast('⚠️ Fill all goal fields'); return; }
+
+      const res = await fetch(`${API}/savings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token') },
+        body: JSON.stringify({ name, target_amount: target, icon: pickedGoalIcon, deadline })
+      });
+      if (!res.ok) { showToast('❌ Failed to save goal'); return; }
+      const data = await res.json();
+
+      ST.savings.push({
+        id: data.goal.goal_id,
+        name: data.goal.name,
+        target: data.goal.target_amount,
+        current: data.goal.current_amount,
+        deadline: data.goal.deadline,
+        icon: data.goal.icon,
+        done: data.goal.is_done
+      });
+      closeModal('modal-goal');
+      document.getElementById('g-name').value = ''; document.getElementById('g-target').value = ''; document.getElementById('g-deadline').value = '';
+      showToast('🎯 Goal created!');
+      renderSavings(); updateUI();
+    }
+
+    function openSaveToGoal(id) {
+      ST.activeGoalId = id;
+      const g = ST.savings.find(g => g.id === id);
+      document.getElementById('saveto-name').textContent = g.icon + ' ' + g.name;
+      document.getElementById('saveto-amt').value = '';
+      openModal('modal-save-goal');
+    }
+
+    async function doSaveToGoal() {
+      const amt = parseFloat(document.getElementById('saveto-amt').value) || 0;
+      if (amt <= 0) { showToast('⚠️ Enter a valid amount'); return; }
+      const g = ST.savings.find(g => g.id === ST.activeGoalId);
+      if (!g) return;
+
+      const res = await fetch(`${API}/savings/${g.id}/add`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token') },
+        body: JSON.stringify({ amount: amt })
+      });
+      if (!res.ok) { showToast('❌ Failed to add to goal'); return; }
+      const data = await res.json();
+
+      g.current = data.goal.current_amount;
+      g.done = data.goal.is_done;
+
+      if (g.done) { confetti({ particleCount: 200, spread: 90 }); showToast('🎉 Goal Achieved! Congratulations!'); }
+      else showToast('💰 ₹' + fmt(amt) + ' added to goal!');
+      closeModal('modal-save-goal');
+      renderSavings(); updateUI();
+    }
+
+    function renderSavings() {
+      const grid = document.getElementById('savings-grid');
+      const histGrid = document.getElementById('savings-history-grid');
+      const histSec = document.getElementById('savings-history-section');
+      if (!grid) return;
+
+      const activeList = ST.savings.filter(g => !g.done);
+      const doneList = ST.savings.filter(g => g.done);
+
+      const active = activeList.length;
+      const total = ST.savings.reduce((s, g) => s + g.current, 0);
+      const done = doneList.length;
+      const avg = ST.savings.length ? Math.round(ST.savings.reduce((s, g) => s + (g.current / g.target) * 100, 0) / ST.savings.length) : 0;
+      el('sv-active', active); el('sv-total', '₹' + fmt(Math.round(total))); el('sv-done', done); el('sv-avg', avg + '%');
+
+      const colors = ['var(--fin-blue-soft)', 'var(--fin-pink)', 'var(--fin-yellow)', 'var(--fin-purple)', 'var(--fin-green)'];
+
+      const renderGoalCard = (g, i) => {
+        const pct = Math.min((g.current / g.target) * 100, 100);
+        return `<div class="zee-card p-8" style="background:${colors[i % colors.length]}">
+      <div class="flex justify-between items-start mb-5">
+        <div style="width:56px;height:56px;border:4px solid #000;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:5px 5px 0 #000">${g.icon}</div>
+        <div class="text-right">
+          <div class="font-black text-3xl">${Math.round(pct)}%</div>
+          ${g.done ? '<div class="bg-green-500 text-white text-xs font-black px-2 py-0.5 rounded-full mt-1">✓ Done!</div>' : ''}
+        </div>
+      </div>
+      <h3 class="font-black text-xl uppercase mb-1">${g.name}</h3>
+      <p class="text-xs font-bold opacity-50 mb-4">📅 ${g.deadline}</p>
+      <div class="prog-track mb-3"><div class="prog-fill" style="width:${pct}%;background:${g.done ? '#16a34a' : '#107eec'}"></div></div>
+      <div class="flex justify-between text-xs font-black mb-5"><span>₹${fmt(g.current)}</span><span class="opacity-50">₹${fmt(g.target)}</span></div>
+      ${!g.done ? `<button class="brutal-btn w-full py-3 text-sm" onclick="openSaveToGoal(${g.id})"><i class="fa-solid fa-piggy-bank"></i> Save More</button>` : '<div class="font-black text-center text-green-700">🎉 Achieved!</div>'}
+    </div>`;
+      };
+
+      if (!activeList.length) {
+        grid.innerHTML = '<div class="col-span-3 text-center font-black opacity-30 py-16">No active goals. Click + New Goal!</div>';
+      } else {
+        grid.innerHTML = activeList.map((g, i) => renderGoalCard(g, i)).join('');
+      }
+
+      if (doneList.length > 0) {
+        histSec.classList.remove('hidden');
+        histGrid.innerHTML = doneList.map((g, i) => renderGoalCard(g, i + activeList.length)).join('');
+      } else {
+        histSec.classList.add('hidden');
+      }
+    }
+
+    // ════════════════════════════════════════
+    // JOURNAL
+    // ════════════════════════════════════════
+    function addJournal() {
+      const sym = document.getElementById('jStock').value.trim();
+      const action = document.getElementById('jAction').value;
+      const reason = document.getElementById('jReason').value.trim();
+      if (!sym || !reason) { showToast('⚠️ Enter stock and reason'); return; }
+      ST.journal.unshift({ sym: sym.toUpperCase(), action, reason, time: new Date().toLocaleTimeString() });
+      document.getElementById('jReason').value = '';
+      renderJournal();
+      showToast('📖 Journal entry saved!');
+      ST.tradeDone++;
+      el('t-count', ST.tradeDone);
+    }
+
+    function renderJournal() {
+      const feed = document.getElementById('journal-feed');
+      if (!feed || !ST.journal.length) return;
+      feed.innerHTML = ST.journal.map(j => `
+    <div class="p-4 border-2 border-black rounded-xl" style="background:var(--bg-cream)">
+      <div class="flex justify-between text-xs font-black uppercase mb-1"><span>${j.sym} · <span class="${j.action.includes('Buy') ? 'tick-up' : 'tick-down'}">${j.action}</span></span><span class="opacity-40">${j.time}</span></div>
+      <p class="text-xs font-bold opacity-70 italic">"${j.reason}"</p>
+    </div>`).join('');
+    }
+
+    // ════════════════════════════════════════
+    // CHARTS
+    // ════════════════════════════════════════
+    const CHART_OPTS = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+
+    function getTrendLabels() {
+      const labels = [];
+      const now = new Date();
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        labels.push(d.toLocaleString('en-US', { month: 'short' }));
+      }
+      return labels;
+    }
+
+    function getTrendData(labels) {
+      const data = new Array(labels.length).fill(0);
+      const now = new Date();
+      ST.transactions.forEach(t => {
+        const tDate = new Date(t.date);
+        for (let i = 0; i < labels.length; i++) {
+          const lDate = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+          if (tDate.getMonth() === lDate.getMonth() && tDate.getFullYear() === lDate.getFullYear()) {
+            data[i] += (t.amount || 0);
+          }
+        }
+      });
+      return data;
+    }
+
+    function buildAllCharts() {
+      // DNA Polar Area
+      const dc = document.getElementById('dnaChart');
+      if (dc && !ST.charts.dna) {
+        ST.charts.dna = new Chart(dc, {
+          type: 'polarArea',
+          data: {
+            labels: ['Food', 'Travel', 'Study', 'Health'],
+            datasets: [{ data: [1, 1, 1, 1], backgroundColor: ['rgba(255,237,148,.85)', 'rgba(193,232,255,.85)', 'rgba(230,216,255,.85)', 'rgba(200,245,200,.85)'], borderColor: '#000', borderWidth: 3 }]
+          },
+          options: { ...CHART_OPTS, scales: { r: { grid: { color: 'rgba(0,0,0,.15)' }, ticks: { display: false } } } }
+        });
+      }
+      // Trend Line
+      const tc = document.getElementById('trendChart');
+      if (tc && !ST.charts.trend) {
+        ST.charts.trend = new Chart(tc, {
+          type: 'line',
+          data: {
+            labels: getTrendLabels(),
+            datasets: [{
+              label: 'Spending', data: [0, 0, 0, 0, 0, 0],
+              borderColor: '#107eec', backgroundColor: 'rgba(16,126,236,.08)', borderWidth: 3,
+              pointBackgroundColor: '#000', pointBorderColor: '#000', pointRadius: 6, fill: true, tension: .4
+            }]
+          },
+          options: {
+            ...CHART_OPTS, scales: {
+              x: { grid: { display: false }, ticks: { font: { weight: '800', size: 11 } } },
+              y: { grid: { color: 'rgba(0,0,0,.08)' }, ticks: { font: { weight: '700', size: 11 }, callback: v => '₹' + v / 1000 + 'k' } }
+            }
+          }
+        });
+      }
+      // Category Bar
+      const bc = document.getElementById('catBarChart');
+      if (bc && !ST.charts.catBar) {
+        ST.charts.catBar = new Chart(bc, {
+          type: 'bar',
+          data: {
+            labels: ['Food', 'Travel', 'Study', 'Health', 'Shopping'],
+            datasets: [{
+              data: [0, 0, 0, 0, 0],
+              backgroundColor: ['rgba(255,237,148,.9)', 'rgba(193,232,255,.9)', 'rgba(230,216,255,.9)', 'rgba(200,245,200,.9)', 'rgba(252,165,165,.9)'],
+              borderColor: '#000', borderWidth: 3, borderRadius: 12
+            }]
+          },
+          options: {
+            ...CHART_OPTS, scales: {
+              x: { grid: { display: false }, ticks: { font: { weight: '800', size: 11 } } },
+              y: { grid: { color: 'rgba(0,0,0,.08)' }, ticks: { font: { weight: '700', size: 10 }, callback: v => '₹' + v } }
+            }
+          }
+        });
+      }
+      // Stock Price Line
+      const sc = document.getElementById('stockPriceChart');
+      if (sc && !ST.charts.stockLine) {
+        ST.charts.stockLine = new Chart(sc, {
+          type: 'line',
+          data: {
+            labels: Array.from({ length: 40 }, (_, i) => i + 1),
+            datasets: [{
+              data: market['RELIANCE'].history.slice(-40),
+              borderColor: '#107eec', backgroundColor: 'rgba(16,126,236,.07)', borderWidth: 2.5,
+              pointRadius: 0, fill: true, tension: .4
+            }]
+          },
+          options: { ...CHART_OPTS, scales: { x: { display: false }, y: { grid: { color: 'rgba(0,0,0,.08)' }, ticks: { font: { weight: '700', size: 10 }, callback: v => '₹' + v } } } }
+        });
+      }
+      // Portfolio Donut
+      const pd = document.getElementById('portfolioDonut');
+      if (pd && !ST.charts.pDonut) {
+        ST.charts.pDonut = new Chart(pd, {
+          type: 'doughnut',
+          data: { labels: ['No Holdings'], datasets: [{ data: [1], backgroundColor: ['rgba(0,0,0,.1)'], borderColor: '#000', borderWidth: 3 }] },
+          options: { ...CHART_OPTS, cutout: '60%', plugins: { legend: { display: true, position: 'bottom', labels: { font: { weight: '800', size: 10 }, boxWidth: 12 } } } }
+        });
+      }
+    }
+
+    function buildRuleChart() {
+      const rc = document.getElementById('ruleChart');
+      if (rc && !ST.charts.rule) {
+        ST.charts.rule = new Chart(rc, {
+          type: 'doughnut',
+          data: {
+            labels: ['Needs 50%', 'Wants 30%', 'Savings 20%'],
+            datasets: [{ data: [50, 30, 20], backgroundColor: ['rgba(255,237,148,.9)', 'rgba(255,214,232,.9)', 'rgba(200,245,200,.9)'], borderColor: '#fff', borderWidth: 4 }]
+          },
+          options: { ...CHART_OPTS, cutout: '50%', plugins: { legend: { display: false } } }
+        });
+      }
+    }
+
+    function updateExpenseCharts() {
+      if (ST.charts.dna) {
+        ST.charts.dna.data.datasets[0].data = [ST.dnaData[0] || 1, ST.dnaData[1] || 1, ST.dnaData[2] || 1, ST.dnaData[3] || 1];
+        ST.charts.dna.update('none');
+      }
+      if (ST.charts.catBar) {
+        const cats = ['Food', 'Travel', 'Study', 'Health', 'Shopping'];
+        ST.charts.catBar.data.datasets[0].data = cats.map(c => ST.transactions.filter(t => t.category === c).reduce((s, t) => s + (t.amount || 0), 0));
+        ST.charts.catBar.update('none');
+      }
+      if (ST.charts.trend) {
+        const labels = getTrendLabels();
+        ST.charts.trend.data.labels = labels;
+        ST.charts.trend.data.datasets[0].data = getTrendData(labels);
+        ST.charts.trend.update('none');
+      }
+    }
+
+    function updatePriceChart() {
+      if (!ST.charts.stockLine) return;
+      const m = market[ST.activePriceChart];
+      ST.charts.stockLine.data.datasets[0].data = m.history.slice(-40);
+      ST.charts.stockLine.update('none');
+    }
+
+    function switchPriceChart(sym) {
+      ST.activePriceChart = sym;
+      document.getElementById('chart-sym-label').textContent = sym;
+      updatePriceChart();
+    }
+
+    function updatePortfolioDonut() {
+      if (!ST.charts.pDonut) return;
+      if (!ST.holdings.length) {
+        ST.charts.pDonut.data.labels = ['No Holdings'];
+        ST.charts.pDonut.data.datasets[0].data = [1];
+        ST.charts.pDonut.data.datasets[0].backgroundColor = ['rgba(0,0,0,.1)'];
+      } else {
+        const c = ['#FFED94', '#C1E8FF', '#E6D8FF', '#FFD6E8', '#C8F5C8', '#FCA5A5', '#107eec'];
+        ST.charts.pDonut.data.labels = ST.holdings.map(h => h.sym);
+        ST.charts.pDonut.data.datasets[0].data = ST.holdings.map(h => (market[h.sym]?.price || h.avg) * h.qty);
+        ST.charts.pDonut.data.datasets[0].backgroundColor = ST.holdings.map((_, i) => c[i % c.length]);
+      }
+      ST.charts.pDonut.update('none');
+    }
+
+    // ════════════════════════════════════════
+    // FINBOT
+    // ════════════════════════════════════════
+
+    function quickBot(msg) { document.getElementById('chatIn').value = msg; sendMessage(); }
+    async function doTopup() {
+      const amt = parseFloat(document.getElementById('topup-amt').value);
+      if (!amt || amt <= 0) { showToast('⚠️ Enter a valid amount'); return; }
+
+      const newBudget = (ST.user.budget || 0) + amt;
+      const res = await fetch(`${API}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token')
+        },
+        body: JSON.stringify({ budget: newBudget })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        ST.user.budget = data.user.budget;
+        ST.wallet += amt;
+        sessionStorage.setItem('fy_user', JSON.stringify(ST.user));
+        showToast(`✅ ₹${fmt(amt)} added to wallet!`);
+        closeModal('modal-topup');
+        document.getElementById('topup-amt').value = '';
+        updateUI();
+      } else {
+        showToast('❌ Top-up failed');
+      }
+    }
+
+    async function sendMessage() {
+      const inp = document.getElementById('chatIn');
+      const area = document.getElementById('chatArea');
+      const msg = inp.value.trim();
+      if (!msg) return;
+
+      inp.value = '';
+      area.innerHTML += `<div class="bubble-user">${msg}</div>`;
+      const tid = 'typing' + Date.now();
+      area.innerHTML += `<div class="bubble-bot" id="${tid}"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Thinking...</div>`;
+      area.scrollTop = area.scrollHeight;
+
+      try {
+        const res = await fetch(`${API}/finbot/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token')
+          },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        document.getElementById(tid)?.remove();
+
+        let reply = '';
+        if (res.ok) {
+          reply = data.reply.replace(/\n/g, '<br>');
+        } else {
+          reply = "⚠️ Error: " + (data.error || "Unable to reach FinBot.");
+        }
+        area.innerHTML += `<div class="bubble-bot">${reply}</div>`;
+        area.scrollTop = area.scrollHeight;
+      } catch (e) {
+        document.getElementById(tid)?.remove();
+        area.innerHTML += `<div class="bubble-bot">⚠️ Connection error. Please ensure the backend is running.</div>`;
+      }
+    }
+
+    // ════════════════════════════════════════
+    // PROFILE
+    // ════════════════════════════════════════
+    function loadProfileView() {
+      const u = ST.user;
+      el('prof-name', u.name || '–');
+      el('prof-email', u.email || '–');
+      el('prof-sid', u.sid || 'Student ID not set');
+      el('prof-course', u.course || '–');
+      el('prof-year', u.year || '–');
+      el('prof-avatar', (u.name || 'U')[0].toUpperCase());
+      el('nav-user-name', (u.name || 'User').split(' ')[0]);
+      // Edit modal pre-fill
+      const epn = document.getElementById('ep-name'); if (epn) epn.value = u.name;
+      const eps = document.getElementById('ep-sid'); if (eps) eps.value = u.sid;
+      const epb = document.getElementById('ep-budget'); if (epb) epb.value = u.budget;
+    }
+
+    async function saveEditProfile() {
+      const bgt = parseFloat(document.getElementById('ep-budget').value);
+      const updates = {
+        name: document.getElementById('ep-name').value || ST.user.name,
+        sid: document.getElementById('ep-sid').value || ST.user.sid,
+        course: document.getElementById('ep-course').value,
+        year: document.getElementById('ep-year').value,
+        budget: bgt > 0 ? bgt : ST.user.budget
+      };
+
+      const res = await fetch(`${API}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('fy_token')
+        },
+        body: JSON.stringify(updates)
+      });
+      const data = await res.json().catch(() => ({ error: 'Not JSON' }));
+      if (!res.ok) {
+        showToast('❌ Error: ' + (data.error || data.msg || 'Unknown'));
+        return;
+      }
+
+      ST.user = { ...ST.user, ...data.user };
+      ST.wallet = ST.user.budget - ST.totalSpend;
+      sessionStorage.setItem('fy_user', JSON.stringify(ST.user));
+
+      loadProfileView();
+      closeModal('modal-edit-profile');
+      showToast('✅ Profile updated!');
+      updateUI();
+    }
+
+    // ════════════════════════════════════════
+    // MASTER UI UPDATE
+    // ════════════════════════════════════════
+    function updateUI() {
+      el('dash-wallet', '₹' + fmt(Math.max(0, ST.wallet)));
+      el('dash-spend', '₹' + fmt(ST.totalSpend));
+      el('dash-paper', '₹' + fmt(Math.round(ST.paperCash)));
+      el('pf-wallet', '₹' + fmt(Math.max(0, ST.wallet)));
+      el('pf-spend', '₹' + fmt(ST.totalSpend));
+      el('pf-savings', ST.savings.length);
+      updateExpenseCharts();
+      renderExpenseHistory();
+      renderDashActivity();
+      renderHoldings();
+      updatePortfolioValue();
+      el('trade-cash-disp', '₹' + fmt(Math.round(ST.paperCash)));
+    }
+
+    function renderDashActivity() {
+      const area = document.getElementById('dash-activity');
+      if (!area) return;
+      if (!ST.transactions.length) { area.innerHTML = '<p class="font-black opacity-30 text-sm text-center py-4">No transactions yet. Log your first spend!</p>'; return; }
+      area.innerHTML = ST.transactions.slice(0, 5).map(t => `
+    <div class="flex items-center justify-between p-4 border-2 border-black rounded-2xl" style="background:var(--bg-cream)">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">${catEmoji[t.category] || '💸'}</span>
+        <div><p class="font-black text-sm uppercase">${t.title}</p><p class="text-xs opacity-40 font-bold">${t.category} · ${t.date}</p></div>
+      </div>
+      <p class="font-black tick-down">-₹${fmt(t.amount || 0)}</p>
+    </div>`).join('');
+    }
+
+    // ════════════════════════════════════════
+    // MODALS + TOAST + UTILS
+    // ════════════════════════════════════════
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+    let _toastT;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerHTML = msg; t.classList.add('show');
+      clearTimeout(_toastT);
+      _toastT = setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    function show(id) { const e = document.getElementById(id); if (e) { e.classList.remove('hidden'); } }
+    function hide(id) { const e = document.getElementById(id); if (e) { e.classList.add('hidden'); } }
+    function el(id, val) { const e = document.getElementById(id); if (e) e.textContent = val; }
+    function fmt(n) { return Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
+
+    // Set today's date on form
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('exDate').value = today;
+    document.getElementById('me-date').value = today;
+
+    // Initial app state is introPage by default
+    window.onload = () => {
+      console.log("FinYaar Ready. Please login to continue.");
+    };
+
+    // Profile Password Reset Functions
+    function resetProfileResetUI() {
+      show('p-fp-s1'); hide('p-fp-s2'); hide('p-fp-s3');
+      document.querySelectorAll('.p-otp-single').forEach(i => i.value = '');
+      document.getElementById('p-np').value = '';
+      document.getElementById('p-cp').value = '';
+    }
+
+    async function startProfileReset() {
+      const res = await fetch(`${API}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: ST.user.email })
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast('❌ ' + data.error); return; }
+
+      showToast('📧 Reset OTP sent to ' + ST.user.email);
+      hide('p-fp-s1'); show('p-fp-s2');
+    }
+
+    function verifyProfileOTP() {
+      const otps = document.querySelectorAll('.p-otp-single');
+      const otp = [...otps].map(i => i.value).join('');
+      if (otp.length < 6) { showToast('⚠️ Enter all 6 digits'); return; }
+      hide('p-fp-s2'); show('p-fp-s3');
+    }
+
+    async function doProfileReset() {
+      const otps = document.querySelectorAll('.p-otp-single');
+      const otp = [...otps].map(i => i.value).join('');
+      const np = document.getElementById('p-np').value;
+      const cp = document.getElementById('p-cp').value;
+
+      if (!np || !cp) { showToast('⚠️ Enter new password'); return; }
+      if (np !== cp) { showToast('⚠️ Passwords do not match'); return; }
+
+      const res = await fetch(`${API}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: ST.user.email, otp, new_password: np })
+      });
+      const data = await res.json();
+
+      if (!res.ok) { showToast('❌ ' + data.error); return; }
+      showToast('✅ Password updated! Use it for your next login.');
+      closeModal('modal-profile-reset');
+    }
+
+    function otpNavProfile(inp, idx) {
+      const all = document.querySelectorAll('.p-otp-single');
+      if (inp.value && idx < all.length - 1) all[idx + 1].focus();
+    }
+  </script>
+</body>
+
+</html>

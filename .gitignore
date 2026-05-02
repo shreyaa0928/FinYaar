@@ -1,0 +1,28 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database
+*.sqlite3
+*.db
+finyaar.db
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# Testing/Logs
+*.log
+api_error.txt
+error.txt
+clean_output.txt
