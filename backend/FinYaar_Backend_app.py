@@ -150,6 +150,7 @@ def gen_otp() -> str:
     return ''.join(random.choices(string.digits, k=6))
 
 def send_email(to: str, subject: str, html: str):
+    resend_err = None
     # Try Resend API first (Works on Render)
     if RESEND_API_KEY:
         try:
@@ -170,9 +171,11 @@ def send_email(to: str, subject: str, html: str):
                 print(f"✅ [FinYaar] Email sent via Resend to {to}")
                 return
             else:
-                print(f"⚠️ [FinYaar] Resend failed ({resp.status_code}): {resp.text}")
+                resend_err = f"Resend Error ({resp.status_code}): {resp.text}"
+                print(f"⚠️ [FinYaar] {resend_err}")
         except Exception as e:
-            print(f"⚠️ [FinYaar] Resend Error: {e}")
+            resend_err = f"Resend Exception: {str(e)}"
+            print(f"⚠️ [FinYaar] {resend_err}")
 
     # Fallback to Gmail SMTP (Works locally, but likely blocked on Render)
     if GMAIL_USER and GMAIL_PASS:
@@ -187,12 +190,12 @@ def send_email(to: str, subject: str, html: str):
                 s.sendmail(GMAIL_USER, to, msg.as_string())
             print(f"✅ [FinYaar] Email sent via Gmail to {to}")
         except Exception as e:
-            print(f"⚠️ [FinYaar] Gmail Error: {e}")
-            raise Exception(f"All email methods failed. {str(e)}")
+            err_msg = f"Gmail Error: {str(e)}"
+            if resend_err:
+                err_msg = f"{resend_err} | {err_msg}"
+            raise Exception(err_msg)
     else:
-        print("⚠️ [FinYaar] No email credentials found.")
-        # For demo purposes if both fail, we'll log it but registration will fail.
-        raise Exception("Email configuration missing or blocked.")
+        raise Exception(resend_err or "No email credentials found.")
 
 def otp_email_html(otp: str, purpose: str) -> str:
     return f"""
