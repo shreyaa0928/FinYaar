@@ -5,7 +5,7 @@ Group CSD138 | Banasthali Vidyapith
 
 """
 
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, send_from_directory
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -21,7 +21,7 @@ load_dotenv()
 # ──────────────────────────────────────
 # APP CONFIG
 # ──────────────────────────────────────
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app, supports_credentials=True)
 
 app.config.update(
@@ -31,6 +31,10 @@ app.config.update(
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24),
     SECRET_KEY = os.getenv('FLASK_SECRET', 'flask-secret-key'),
 )
+
+@app.route('/')
+def serve_index():
+    return app.send_static_file('index.html')
 
 db  = SQLAlchemy(app)
 jwt = JWTManager(app)

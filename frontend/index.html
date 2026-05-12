@@ -1485,7 +1485,9 @@
   </style>
 
   <script>
-    const API = 'https://finyaar-backend.onrender.com/api';
+    const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                ? '/api' 
+                : 'https://finyaar-backend.onrender.com/api';
     // ════════════════════════════════════════
     // GLOBAL STATE
     // ════════════════════════════════════════
