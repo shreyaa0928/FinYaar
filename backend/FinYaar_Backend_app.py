@@ -172,14 +172,14 @@ def send_email(to: str, subject: str, html: str):
             }
             resp = resend_req.post(url, headers=headers, json=payload, timeout=10)
             if resp.status_code in [200, 201]:
-                print(f"✅ [FinYaar] Email sent via Resend to {to}")
+                print(f"[OK] [FinYaar] Email sent via Resend to {to}")
                 return
             else:
                 resend_err = f"Resend Error ({resp.status_code}): {resp.text}"
-                print(f"⚠️ [FinYaar] {resend_err}")
+                print(f"[WARN] [FinYaar] {resend_err}")
         except Exception as e:
             resend_err = f"Resend Exception: {str(e)}"
-            print(f"⚠️ [FinYaar] {resend_err}")
+            print(f"[WARN] [FinYaar] {resend_err}")
 
     # Fallback to Gmail SMTP (Works locally, but likely blocked on Render)
     if GMAIL_USER and GMAIL_PASS:
@@ -192,7 +192,7 @@ def send_email(to: str, subject: str, html: str):
             with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as s:
                 s.login(GMAIL_USER, GMAIL_PASS)
                 s.sendmail(GMAIL_USER, to, msg.as_string())
-            print(f"✅ [FinYaar] Email sent via Gmail to {to}")
+            print(f"[OK] [FinYaar] Email sent via Gmail to {to}")
         except Exception as e:
             err_msg = f"Gmail Error: {str(e)}"
             if resend_err:
@@ -233,7 +233,7 @@ def register():
     expires = datetime.utcnow() + timedelta(minutes=10)
     otp_store[email] = {'otp': otp, 'expires_at': expires, 'data': data, 'type': 'register'}
     try:
-        print(f"🔑 [FinYaar Auth] Registration OTP for {email}: {otp}")
+        print(f"[KEY] [FinYaar Auth] Registration OTP for {email}: {otp}")
         send_email(email, 'FinYaar – Verify Your Email', otp_email_html(otp,'Registration'))
     except Exception as e:
         return jsonify(error=f'Email send failed: {str(e)}'), 500
@@ -290,7 +290,7 @@ def login():
     expires = datetime.utcnow() + timedelta(minutes=10)
     otp_store[email] = {'otp': otp, 'expires_at': expires, 'type': 'login'}
     try:
-        print(f"🔑 [FinYaar Auth] Login OTP for {email}: {otp}")
+        print(f"[KEY] [FinYaar Auth] Login OTP for {email}: {otp}")
         send_email(email, 'FinYaar – Login OTP', otp_email_html(otp,'Login'))
     except Exception as e:
         return jsonify(error=f'Email send failed: {str(e)}'), 500
@@ -309,7 +309,7 @@ def forgot_password():
     db.session.add(PasswordReset(email=email, otp=otp, expires_at=expires))
     db.session.commit()
     try:
-        print(f"🔑 [FinYaar Auth] Password Reset OTP for {email}: {otp}")
+        print(f"[KEY] [FinYaar Auth] Password Reset OTP for {email}: {otp}")
         send_email(email, 'FinYaar – Reset Your Password', otp_email_html(otp,'Password Reset'))
     except Exception as e:
         return jsonify(error=f'Email send failed: {str(e)}'), 500
@@ -1301,13 +1301,13 @@ with app.app_context():
         with db.engine.connect() as conn:
             conn.execute(text("ALTER TABLE users ADD COLUMN last_reset_date DATE"))
             conn.commit()
-        print("✅ Migrated: added last_reset_date column to users")
+        print("[OK] Migrated: added last_reset_date column to users")
     except Exception:
         pass
-    print("✅ FinYaar DB tables ready.")
+    print("[OK] FinYaar DB tables ready.")
 
 if __name__ == '__main__':
-    print(f"🤖 FinBot: HF API Key {'✅ SET' if HF_API_KEY else '❌ NOT SET — using fallback only'}")
+    print(f"[BOT] FinBot: HF API Key {'[SET]' if HF_API_KEY else '[NOT SET] — using fallback only'}")
     # t = threading.Thread(target=_midnight_scheduler, daemon=True)
     # t.start()
     app.run(debug=True, port=5000, use_reloader=False)

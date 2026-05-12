@@ -1437,7 +1437,7 @@
     </div>
   </div>
 
-  <!-- Market Education Modal -->
+
   <div class="modal-overlay" id="modal-trade-edu">
     <div class="modal-box" style="max-width:450px">
       <div class="flex justify-between items-center mb-6">
@@ -1453,7 +1453,7 @@
     </div>
   </div>
 
-  <!-- Top-up Wallet Modal -->
+
   <div class="modal-overlay" id="modal-topup">
     <div class="modal-box" style="max-width:400px">
       <div class="flex justify-between items-center mb-6">
@@ -1469,7 +1469,7 @@
     </div>
   </div>
 
-  <!-- Toast -->
+
   <div id="toast"></div>
 
   <style>
@@ -1485,12 +1485,10 @@
   </style>
 
   <script>
-    const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                ? '/api' 
-                : 'https://finyaar-backend.onrender.com/api';
-    // ════════════════════════════════════════
-    // GLOBAL STATE
-    // ════════════════════════════════════════
+    const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? '/api'
+      : 'https://finyaar-backend.onrender.com/api';
+
     const ST = {
       user: { name: '', email: '', sid: '', course: '', year: '', budget: 55000 },
       wallet: 55000,
@@ -1511,7 +1509,7 @@
       pendingOrders: []
     };
 
-    // Market data
+
     const MKT_BASE = {
       RELIANCE: { name: 'Reliance Industries', price: 2456.75, vol: '2.5M' },
       TCS: { name: 'Tata Consultancy Svcs', price: 3769.50, vol: '1.8M' },
